@@ -10,7 +10,7 @@ export default async function AuthorPage({ params }: AuthorPageProps) {
   const { author } = await apiGet<{ author: any }>(`/users/authors/${username}`);
 
   return (
-    <main className="page-shell py-10">
+    <main className="page-main">
       <section className="panel mb-8 grid gap-4 p-8 md:grid-cols-[120px_1fr]">
         <div className="size-[120px] rounded-full bg-stone-300">
           {author.avatarUrl ? (

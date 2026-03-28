@@ -10,5 +10,15 @@ test("user can register and reach the private profile", async ({ page }) => {
   await page.getByPlaceholder("Password").fill("SecretPass123!");
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page).toHaveURL("/profile");
-  await expect(page.getByText("Your Cookpedia workspace")).toBeVisible();
+  const title = page.getByRole("heading", { name: "Your Cookpedia workspace" });
+  const header = page.locator("header");
+
+  await expect(title).toBeVisible();
+
+  const headerBox = await header.boundingBox();
+  const titleBox = await title.boundingBox();
+
+  expect(headerBox).not.toBeNull();
+  expect(titleBox).not.toBeNull();
+  expect(titleBox!.y).toBeGreaterThanOrEqual(headerBox!.y + headerBox!.height - 1);
 });

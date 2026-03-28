@@ -31,7 +31,7 @@ export default function ProfilePage() {
   }, []);
 
   return (
-    <main className="page-shell py-10">
+    <main className="page-main">
       <div className="mb-8 flex items-end justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">

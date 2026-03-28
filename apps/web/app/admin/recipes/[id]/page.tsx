@@ -27,11 +27,11 @@ export default function AdminRecipeDetailPage({
   }, [id]);
 
   if (!recipe) {
-    return <main className="page-shell py-10">Loading moderation detail...</main>;
+    return <main className="page-main">Loading moderation detail...</main>;
   }
 
   return (
-    <main className="page-shell py-10">
+    <main className="page-main">
       <div className="mb-8 flex items-end justify-between gap-4">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">

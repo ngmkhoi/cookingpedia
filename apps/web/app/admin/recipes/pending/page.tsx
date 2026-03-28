@@ -18,7 +18,7 @@ export default function PendingRecipesPage() {
   }, []);
 
   return (
-    <main className="page-shell py-10">
+    <main className="page-main">
       <div className="mb-6 flex items-end justify-between gap-4">
         <div>
           <p className="eyebrow">Admin workflow</p>

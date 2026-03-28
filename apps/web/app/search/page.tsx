@@ -16,7 +16,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     : { recipes: [] };
 
   return (
-    <main className="page-shell py-10">
+    <main className="page-main">
       <div className="mb-8">
         <SectionHeading
           eyebrow="Search"

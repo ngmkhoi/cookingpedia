@@ -23,11 +23,11 @@ export default function EditRecipePage({ params }: EditRecipePageProps) {
   }, [id]);
 
   if (!recipe) {
-    return <main className="page-shell py-10">Loading recipe editor...</main>;
+    return <main className="page-main">Loading recipe editor...</main>;
   }
 
   return (
-    <main className="page-shell py-10">
+    <main className="page-main">
       <div className="mb-8">
         <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
           Recipe studio

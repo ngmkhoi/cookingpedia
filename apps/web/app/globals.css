@@ -13,6 +13,7 @@
   --accent-strong: #324132;
   --line: #d8d2c3;
   --line-subtle: #e6e1d6;
+  --site-header-clearance: 5.75rem;
 
   --section-gap-sm: 5rem;
   --section-gap-lg: 7rem;
@@ -60,6 +61,16 @@ a {
 
 .page-shell {
   @apply mx-auto max-w-[1400px] px-5 md:px-8;
+}
+
+.page-main {
+  @apply mx-auto max-w-[1400px] px-5 pb-10 md:px-8;
+  padding-top: calc(var(--site-header-clearance) + 2.5rem);
+}
+
+.page-main-roomy {
+  @apply mx-auto max-w-[1400px] px-5 pb-16 md:px-8;
+  padding-top: calc(var(--site-header-clearance) + 4rem);
 }
 
 .panel {

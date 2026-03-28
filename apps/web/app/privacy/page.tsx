@@ -1,6 +1,6 @@
 export default function PrivacyPage() {
   return (
-    <main className="page-shell py-16">
+    <main className="page-main-roomy">
       <div className="panel max-w-4xl space-y-5 p-8">
         <p className="text-xs uppercase tracking-[0.2em] text-[var(--muted)]">
           Privacy

@@ -11,7 +11,7 @@ export default async function RecipeDetailPage({
   const { recipe } = await apiGet<{ recipe: any }>(`/recipes/slug/${slug}`);
 
   return (
-    <main className="page-shell py-10">
+    <main className="page-main">
       <div className="grid gap-8 md:grid-cols-[1.1fr_0.9fr]">
         <div className="grid gap-4">
           {recipe.images.map((image: any) => (
