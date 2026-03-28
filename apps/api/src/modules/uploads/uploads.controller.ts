@@ -16,7 +16,18 @@ export const uploadsController = {
       throw new AppError(400, "INVALID_IMAGE");
     }
 
-    const imageUrl = await uploadsService.saveRecipeImage(req.file);
+    let imageUrl: string;
+
+    try {
+      imageUrl = await uploadsService.saveRecipeImage(req.file);
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+
+      throw new AppError(500, "UPLOAD_FAILED");
+    }
+
     return res.status(201).json(ok({ imageUrl }));
   }
 };
