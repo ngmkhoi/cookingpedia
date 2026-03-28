@@ -1,0 +1,26 @@
+{
+  "name": "cookpedia",
+  "private": true,
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "dev": "pnpm --parallel --filter @cookpedia/api --filter @cookpedia/web dev",
+    "dev:api": "pnpm --filter @cookpedia/api dev",
+    "dev:web": "pnpm --filter @cookpedia/web dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@firebase/util",
+      "@prisma/client",
+      "@prisma/engines",
+      "argon2",
+      "esbuild",
+      "prisma",
+      "protobufjs",
+      "sharp"
+    ]
+  }
+}
