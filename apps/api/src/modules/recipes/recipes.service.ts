@@ -261,7 +261,7 @@ export const publicRecipesService = {
           }
         },
         orderBy: { createdAt: "desc" },
-        take: 6
+        take: 7
       }),
       prisma.recipe.groupBy({
         by: ["category"],

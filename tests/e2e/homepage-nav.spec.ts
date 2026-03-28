@@ -52,3 +52,22 @@ test("homepage discovery entry points deep-link into the unified search page", a
   await expect(page).toHaveURL(new RegExp(`/search\\?category=${category}(&|$)`));
   await expect(page.getByText(`${category} recipes`)).toBeVisible();
 });
+
+test("newest recipes preview shows one featured card and six smaller cards on desktop", async ({
+  page
+}) => {
+  await page.goto("/");
+
+  await expect(page.getByTestId("newest-featured-card")).toHaveCount(1);
+  await expect(page.getByTestId("newest-preview-card")).toHaveCount(6);
+});
+
+test("newest recipes preview shows one featured card and three smaller cards on mobile", async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+
+  await expect(page.getByTestId("newest-featured-card")).toHaveCount(1);
+  await expect(page.locator('[data-testid="newest-preview-card"]:visible')).toHaveCount(3);
+});
