@@ -10,7 +10,7 @@ import {
   Heart
 } from "@phosphor-icons/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { apiWrite } from "@/lib/api";
@@ -23,9 +23,11 @@ export function SiteHeader() {
   const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch();
   const router = useRouter();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
+  const elevated = scrolled || pathname !== "/";
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -65,8 +67,8 @@ export function SiteHeader() {
   return (
     <header
       className={`fixed left-1/2 z-40 flex -translate-x-1/2 items-center justify-between px-6 py-3 transition-all duration-500 ${
-        scrolled
-          ? "top-3 max-w-[min(1360px,calc(100%-2rem))] rounded-[2rem] border border-[var(--line-subtle)] bg-[var(--canvas)]/85 shadow-[0_8px_32px_-8px_rgba(22,32,25,0.12)] backdrop-blur-xl"
+        elevated
+          ? "top-3 max-w-[min(1360px,calc(100%-2rem))] rounded-[2rem] border border-[var(--line-subtle)] bg-[rgba(242,239,231,0.85)] shadow-[0_8px_32px_-8px_rgba(22,32,25,0.12)] backdrop-blur-xl"
           : "top-4 max-w-[1400px] rounded-[2.5rem] bg-transparent px-5 md:px-8"
       }`}
       style={{ width: "calc(100% - 2rem)" }}
@@ -74,7 +76,7 @@ export function SiteHeader() {
       <Link
         href="/"
         className={`text-lg font-semibold uppercase tracking-[0.18em] transition-colors duration-300 ${
-          scrolled ? "text-[var(--ink)]" : "text-white"
+          elevated ? "text-[var(--ink)]" : "text-white"
         }`}
       >
         {SITE_NAME}
@@ -83,7 +85,7 @@ export function SiteHeader() {
         <Link
           href={MAIN_NAV[0].href}
           className={`rounded-[1.2rem] px-4 py-2.5 transition-all duration-200 ${
-            scrolled
+            elevated
               ? "border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--panel-soft)]"
               : "border border-white/15 bg-white/10 text-white/90 backdrop-blur-sm hover:bg-white/20"
           }`}
@@ -93,7 +95,7 @@ export function SiteHeader() {
         <Link
           href={MAIN_NAV[1].href}
           className={`rounded-[1.2rem] px-4 py-2.5 transition-all duration-200 ${
-            scrolled
+            elevated
               ? "text-[var(--muted)] hover:bg-black/5"
               : "text-white/70 hover:text-white"
           }`}
@@ -106,10 +108,10 @@ export function SiteHeader() {
             onClick={() => setOpen((value) => !value)}
             className={`inline-flex items-center rounded-[1.2rem] px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
               auth.status === "authenticated"
-                ? scrolled
+                ? elevated
                   ? "bg-[var(--accent-strong)] text-white shadow-[0_10px_24px_-14px_rgba(50,65,50,0.4)]"
                   : "border border-white/20 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25"
-                : scrolled
+                : elevated
                   ? "border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--panel-soft)]"
                   : "border border-white/15 bg-white/10 text-white/90 backdrop-blur-sm hover:bg-white/20"
             }`}

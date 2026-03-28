@@ -12,8 +12,11 @@ test("user can register and reach the private profile", async ({ page }) => {
   await expect(page).toHaveURL("/profile");
   const title = page.getByRole("heading", { name: "Your Cookpedia workspace" });
   const header = page.locator("header");
+  const headerHomeLink = header.getByRole("link", { name: "Cookpedia" });
 
   await expect(title).toBeVisible();
+  await expect(header).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+  await expect(headerHomeLink).not.toHaveCSS("color", "rgb(255, 255, 255)");
 
   const headerBox = await header.boundingBox();
   const titleBox = await title.boundingBox();
