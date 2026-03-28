@@ -13,9 +13,11 @@ test("homepage surfaces discovery sections and guest auth gate", async ({
   page
 }) => {
   await page.goto("/");
+  const heroSection = page.locator("main > section").first();
   const trendingHeading = page.locator("#trending").getByText("Trending now");
   const categoryHeading = page.getByText("Browse by category").first();
 
+  await expect(heroSection).not.toHaveCSS("background-image", /url\(/);
   await trendingHeading.scrollIntoViewIfNeeded();
   await expect(trendingHeading).toBeVisible();
   await categoryHeading.scrollIntoViewIfNeeded();
@@ -36,13 +38,16 @@ test("homepage discovery entry points deep-link into the unified search page", a
   await expect(page.getByText("Newest recipes")).toBeVisible();
 
   await page.goto("/");
-  const dinnerLink = page.getByRole("link", { name: /Dinner/ }).first();
-  const href = await dinnerLink.getAttribute("href");
+  const categorySection = page.locator("section").filter({
+    has: page.getByText("Browse by category").first()
+  });
+  const categoryLink = categorySection.getByRole("link").first();
+  const href = await categoryLink.getAttribute("href");
   const category = href
     ? new URL(`http://localhost:3000${href}`).searchParams.get("category")
     : null;
-  await dinnerLink.scrollIntoViewIfNeeded();
-  await dinnerLink.click();
+  await categoryLink.scrollIntoViewIfNeeded();
+  await categoryLink.click();
   expect(category).toBeTruthy();
   await expect(page).toHaveURL(new RegExp(`/search\\?category=${category}(&|$)`));
   await expect(page.getByText(`${category} recipes`)).toBeVisible();

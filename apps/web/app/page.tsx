@@ -40,9 +40,8 @@ export default async function HomePage() {
     ? data.trending.slice(1)
     : data.newest.slice(0, 3);
 
-  const heroBackdrop = heroRecipe?.coverImageUrl
-    ? `linear-gradient(170deg, rgba(22, 32, 25, 0.62) 0%, rgba(50, 65, 50, 0.38) 50%, rgba(242, 239, 231, 0.95) 100%), url(${heroRecipe.coverImageUrl})`
-    : "linear-gradient(170deg, rgba(22, 32, 25, 0.55) 0%, rgba(50, 65, 50, 0.25) 50%, rgba(242, 239, 231, 0.95) 100%)";
+  const heroBackdrop =
+    "radial-gradient(ellipse 120% 90% at 15% 5%, rgba(122, 111, 87, 0.18), transparent 48%), radial-gradient(ellipse 90% 70% at 85% 0%, rgba(81, 96, 68, 0.26), transparent 55%), linear-gradient(180deg, #2d3a2f 0%, #435246 42%, #d8d1c2 100%)";
 
   return (
     <main className="min-h-[100dvh]">
