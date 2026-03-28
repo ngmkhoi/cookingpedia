@@ -1,0 +1,158 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum Locale {
+  VI
+  EN
+}
+
+enum RecipeStatus {
+  DRAFT
+  PENDING
+  PUBLISHED
+  REJECTED
+}
+
+enum RecipeDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  displayName     String
+  username        String    @unique
+  avatarUrl       String?
+  bio             String?
+  locale          Locale    @default(VI)
+  role            UserRole  @default(USER)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  recipes         Recipe[]  @relation("RecipeAuthor")
+  reviews         Rating[]
+  bookmarks       Bookmark[]
+  sessions        Session[]
+  reviewedRecipes Recipe[]  @relation("RecipeReviewer")
+}
+
+model Recipe {
+  id               String           @id @default(cuid())
+  authorId         String
+  title            String
+  slug             String           @unique
+  shortDescription String
+  prepMinutes      Int
+  cookMinutes      Int
+  servings         Int
+  coverImageUrl    String?
+  category         String
+  cuisine          String
+  difficulty       RecipeDifficulty
+  locale           Locale           @default(VI)
+  status           RecipeStatus     @default(DRAFT)
+  submittedAt      DateTime?
+  reviewedAt       DateTime?
+  reviewedById     String?
+  rejectionReason  String?
+  ratingAverage    Float            @default(0)
+  ratingCount      Int              @default(0)
+  bookmarkCount    Int              @default(0)
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  author           User             @relation("RecipeAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  reviewer         User?            @relation("RecipeReviewer", fields: [reviewedById], references: [id], onDelete: SetNull)
+  images           RecipeImage[]
+  ingredients      Ingredient[]
+  steps            Step[]
+  ratings          Rating[]
+  bookmarks        Bookmark[]
+
+  @@index([status, createdAt])
+  @@index([authorId, status])
+}
+
+model RecipeImage {
+  id        String  @id @default(cuid())
+  recipeId  String
+  imageUrl  String
+  caption   String?
+  sortOrder Int
+  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, sortOrder])
+}
+
+model Ingredient {
+  id        String  @id @default(cuid())
+  recipeId  String
+  name      String
+  quantity  Decimal @db.Decimal(10, 2)
+  unit      String
+  sortOrder Int
+  recipe    Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@index([name])
+  @@unique([recipeId, sortOrder])
+}
+
+model Step {
+  id          String @id @default(cuid())
+  recipeId    String
+  stepNumber  Int
+  instruction String
+  recipe      Recipe @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([recipeId, stepNumber])
+}
+
+model Rating {
+  id        String   @id @default(cuid())
+  userId    String
+  recipeId  String
+  score     Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId])
+}
+
+model Bookmark {
+  id        String   @id @default(cuid())
+  userId    String
+  recipeId  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  recipe    Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, recipeId])
+}
+
+model Session {
+  id               String   @id @default(cuid())
+  userId           String
+  refreshTokenHash String
+  expiresAt        DateTime
+  revokedAt        DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+}
