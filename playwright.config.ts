@@ -1,6 +1,6 @@
-import { defineConfig } from "@playwright/test";
+import type { PlaywrightTestConfig } from "@playwright/test";
 
-export default defineConfig({
+const config: PlaywrightTestConfig = {
   testDir: "./tests/e2e",
   workers: 1,
   use: {
@@ -11,12 +11,14 @@ export default defineConfig({
     {
       command: "pnpm --filter @cookpedia/api prisma:seed && pnpm --filter @cookpedia/api dev",
       port: 4000,
-      reuseExistingServer: true
+      reuseExistingServer: false
     },
     {
       command: "pnpm --filter @cookpedia/web dev",
       port: 3000,
-      reuseExistingServer: true
+      reuseExistingServer: false
     }
   ]
-});
+};
+
+export default config;

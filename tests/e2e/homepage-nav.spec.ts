@@ -13,8 +13,13 @@ test("homepage surfaces discovery sections and guest auth gate", async ({
   page
 }) => {
   await page.goto("/");
-  await expect(page.locator("#trending").getByText("Trending now")).toBeVisible();
-  await expect(page.getByText("Browse by category").first()).toBeVisible();
+  const trendingHeading = page.locator("#trending").getByText("Trending now");
+  const categoryHeading = page.getByText("Browse by category").first();
+
+  await trendingHeading.scrollIntoViewIfNeeded();
+  await expect(trendingHeading).toBeVisible();
+  await categoryHeading.scrollIntoViewIfNeeded();
+  await expect(categoryHeading).toBeVisible();
   await expect(page.getByRole("contentinfo").getByRole("link", { name: "Privacy" })).toBeVisible();
   await expect(page.getByRole("contentinfo").getByRole("link", { name: "Terms" })).toBeVisible();
   await page.getByRole("button", { name: "Share a recipe" }).click();

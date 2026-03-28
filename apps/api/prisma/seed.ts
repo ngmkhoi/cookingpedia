@@ -150,20 +150,25 @@ async function main() {
   const password = process.env.SEED_ADMIN_PASSWORD ?? "AdminPass123!";
   const username = process.env.SEED_ADMIN_USERNAME ?? "cookpedia-admin";
   const displayName = process.env.SEED_ADMIN_DISPLAY_NAME ?? "Cookpedia Admin";
+  const adminPasswordHash = await argon2.hash(password, { type: argon2.argon2id });
+  const editorPasswordHash = await argon2.hash("EditorPass123!", {
+    type: argon2.argon2id
+  });
 
   await prisma.user.upsert({
     where: { email },
     update: {
       role: UserRole.ADMIN,
       username,
-      displayName
+      displayName,
+      passwordHash: adminPasswordHash
     },
     create: {
       email,
       username,
       displayName,
       role: UserRole.ADMIN,
-      passwordHash: await argon2.hash(password, { type: argon2.argon2id })
+      passwordHash: adminPasswordHash
     }
   });
 
@@ -171,14 +176,15 @@ async function main() {
     where: { email: "editor@cookpedia.local" },
     update: {
       username: "cookpedia-editor",
-      displayName: "Cookpedia Editor"
+      displayName: "Cookpedia Editor",
+      passwordHash: editorPasswordHash
     },
     create: {
       email: "editor@cookpedia.local",
       username: "cookpedia-editor",
       displayName: "Cookpedia Editor",
       role: UserRole.USER,
-      passwordHash: await argon2.hash("EditorPass123!", { type: argon2.argon2id })
+      passwordHash: editorPasswordHash
     }
   });
 
