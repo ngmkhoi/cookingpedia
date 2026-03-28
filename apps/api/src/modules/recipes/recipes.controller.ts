@@ -8,6 +8,7 @@ const getRouteId = (value: string | string[]) =>
   Array.isArray(value) ? value[0] : value;
 
 const toApiLocale = (locale: "VI" | "EN") => (locale === "EN" ? "en" : "vi");
+const recipeDifficulties = new Set(["EASY", "MEDIUM", "HARD"]);
 
 const serializeRecipe = (recipe: {
   locale: "VI" | "EN";
@@ -79,11 +80,27 @@ export const recipesController = {
 
   async search(req: AuthenticatedRequest, res: Response) {
     const q = String(req.query.q || "").trim();
-    if (!q) {
-      return res.status(200).json(ok({ recipes: [] }));
-    }
+    const category = String(req.query.category || "").trim();
+    const cuisine = String(req.query.cuisine || "").trim();
+    const difficulty = String(req.query.difficulty || "").trim().toUpperCase();
+    const rawMaxCookMinutes = String(req.query.maxCookMinutes || "").trim();
+    const parsedMaxCookMinutes = Number(rawMaxCookMinutes);
+    const maxCookMinutes =
+      rawMaxCookMinutes && Number.isFinite(parsedMaxCookMinutes) && parsedMaxCookMinutes > 0
+        ? parsedMaxCookMinutes
+        : undefined;
+    const sort = req.query.sort === "mostSaved" ? "mostSaved" : "newest";
 
-    const recipes = await publicRecipesService.search(q);
+    const recipes = await publicRecipesService.search({
+      q: q || undefined,
+      category: category || undefined,
+      cuisine: cuisine || undefined,
+      difficulty: recipeDifficulties.has(difficulty)
+        ? (difficulty as "EASY" | "MEDIUM" | "HARD")
+        : undefined,
+      maxCookMinutes,
+      sort
+    });
     return res.status(200).json(ok({ recipes: serializeRecipeList(recipes) }));
   },
 

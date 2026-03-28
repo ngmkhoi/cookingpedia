@@ -46,7 +46,7 @@ export function CategoryStrip({
           return (
             <ScrollReveal key={category.name} delay={index + 1}>
               <Link
-                href={`/search?q=${encodeURIComponent(category.name)}`}
+                href={`/search?category=${encodeURIComponent(category.name)}`}
                 className={isLead ? "md:col-span-2 xl:col-span-1" : ""}
               >
                 <div

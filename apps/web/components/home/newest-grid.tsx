@@ -1,6 +1,9 @@
 import Link from "next/link";
+import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
 import { CardSurface } from "@/components/ui/card-surface";
+import { buttonVariants } from "@/components/ui/button";
 import { ScrollReveal } from "@/components/ui/scroll-animations";
+import { cn } from "@/lib/utils";
 
 type HomepageRecipe = {
   id: string;
@@ -19,19 +22,34 @@ type HomepageRecipe = {
 };
 
 export function NewestGrid({ recipes }: { recipes: HomepageRecipe[] }) {
-  if (recipes.length === 0) {
+  const previewRecipes = recipes.slice(0, 6);
+
+  if (previewRecipes.length === 0) {
     return null;
   }
 
-  const [featured, ...remaining] = recipes;
+  const [featured, ...remaining] = previewRecipes;
 
   return (
     <section className="page-shell section-block">
       <ScrollReveal>
-        <div className="mb-10 flex flex-col gap-2 md:flex-row md:items-baseline md:gap-4">
-          <h2 className="display-title text-[clamp(2.2rem,4.5vw,3.6rem)]">
-            Newest recipes
-          </h2>
+        <div className="mb-10 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-2">
+            <p className="section-label">Latest from the shelf</p>
+            <h2 className="display-title text-[clamp(2.2rem,4.5vw,3.6rem)]">
+              Newest recipes
+            </h2>
+          </div>
+          <Link
+            href="/search?sort=newest"
+            className={cn(
+              buttonVariants({ variant: "secondary", size: "sm" }),
+              "gap-2 self-start rounded-full"
+            )}
+          >
+            See all newest
+            <ArrowRight data-icon="inline-end" weight="bold" />
+          </Link>
         </div>
       </ScrollReveal>
 

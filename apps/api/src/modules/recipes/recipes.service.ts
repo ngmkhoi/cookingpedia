@@ -38,6 +38,15 @@ type RecipeInput = {
   }>;
 };
 
+type PublicRecipeDiscoveryQuery = {
+  q?: string;
+  category?: string;
+  sort: "newest" | "mostSaved";
+  cuisine?: string;
+  difficulty?: "EASY" | "MEDIUM" | "HARD";
+  maxCookMinutes?: number;
+};
+
 const recipeInclude = {
   images: { orderBy: { sortOrder: "asc" as const } },
   ingredients: { orderBy: { sortOrder: "asc" as const } },
@@ -273,14 +282,19 @@ export const publicRecipesService = {
     };
   },
 
-  async search(query: string) {
-    return prisma.recipe.findMany({
-      where: {
-        status: "PUBLISHED",
+  async search(query: PublicRecipeDiscoveryQuery) {
+    const where: Record<string, unknown> = {
+      status: "PUBLISHED"
+    };
+
+    const andClauses: Array<Record<string, unknown>> = [];
+
+    if (query.q) {
+      andClauses.push({
         OR: [
           {
             title: {
-              contains: query,
+              contains: query.q,
               mode: "insensitive"
             }
           },
@@ -288,14 +302,48 @@ export const publicRecipesService = {
             ingredients: {
               some: {
                 name: {
-                  contains: query,
+                  contains: query.q,
                   mode: "insensitive"
                 }
               }
             }
           }
         ]
-      },
+      });
+    }
+
+    if (query.category) {
+      andClauses.push({
+        category: query.category
+      });
+    }
+
+    if (query.cuisine) {
+      andClauses.push({
+        cuisine: query.cuisine
+      });
+    }
+
+    if (query.difficulty) {
+      andClauses.push({
+        difficulty: query.difficulty
+      });
+    }
+
+    if (query.maxCookMinutes !== undefined) {
+      andClauses.push({
+        cookMinutes: {
+          lte: query.maxCookMinutes
+        }
+      });
+    }
+
+    if (andClauses.length > 0) {
+      where.AND = andClauses;
+    }
+
+    return prisma.recipe.findMany({
+      where,
       include: {
         author: {
           select: {
@@ -305,7 +353,14 @@ export const publicRecipesService = {
           }
         }
       },
-      orderBy: { createdAt: "desc" },
+      orderBy:
+        query.sort === "mostSaved"
+          ? [
+              { bookmarkCount: "desc" as const },
+              { ratingAverage: "desc" as const },
+              { createdAt: "desc" as const }
+            ]
+          : { createdAt: "desc" },
       distinct: ["id"]
     });
   },

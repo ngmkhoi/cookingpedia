@@ -138,7 +138,7 @@ export default async function HomePage() {
       <CategoryStrip categories={data.categories} />
 
       {/* ─── Newest ─── */}
-      <NewestGrid recipes={data.newest} />
+      <NewestGrid recipes={data.newest.slice(0, 6)} />
     </main>
   );
 }
