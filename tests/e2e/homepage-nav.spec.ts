@@ -9,7 +9,7 @@ test("guest header exposes account entry and auth routes", async ({ page }) => {
   ).toBeVisible();
 });
 
-test("mobile header collapses nav into the account-led trigger for anonymous users", async ({
+test("mobile header collapses nav into a hamburger dropdown for anonymous users", async ({
   page
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
@@ -19,7 +19,7 @@ test("mobile header collapses nav into the account-led trigger for anonymous use
   await expect(header.getByRole("link", { name: "Search" })).toHaveCount(0);
   await expect(header.getByRole("link", { name: "Trending" })).toHaveCount(0);
 
-  const trigger = header.getByRole("button", { name: /login \/ register/i });
+  const trigger = header.getByRole("button", { name: "Open navigation menu" });
   await expect(trigger).toBeVisible();
   await trigger.click();
 

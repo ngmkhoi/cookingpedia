@@ -26,7 +26,8 @@ test("user can register and reach the private profile", async ({ page }) => {
   expect(titleBox!.y).toBeGreaterThanOrEqual(headerBox!.y + headerBox!.height - 1);
 
   await page.setViewportSize({ width: 390, height: 844 });
-  const mobileTrigger = header.getByRole("button", { name: /bao huynh|profile/i });
+  await page.goto("/profile");
+  const mobileTrigger = header.getByRole("button", { name: "Open navigation menu" });
   await expect(mobileTrigger).toBeVisible();
   await mobileTrigger.click();
 

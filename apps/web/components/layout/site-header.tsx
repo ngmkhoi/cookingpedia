@@ -4,6 +4,7 @@ import {
   SignIn,
   UserCircle,
   CaretDown,
+  List,
   SignOut,
   Gear,
   BookOpen,
@@ -84,6 +85,22 @@ export function SiteHeader() {
     </div>
   );
 
+  const desktopAccountTriggerClasses = `hidden items-center rounded-[1.2rem] px-4 py-2.5 text-sm font-medium transition-all duration-200 md:inline-flex ${
+    auth.status === "authenticated"
+      ? elevated
+        ? "bg-[var(--accent-strong)] text-white shadow-[0_10px_24px_-14px_rgba(50,65,50,0.4)]"
+        : "border border-white/20 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25"
+      : elevated
+        ? "border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--panel-soft)]"
+        : "border border-white/15 bg-white/10 text-white/90 backdrop-blur-sm hover:bg-white/20"
+  }`;
+
+  const mobileMenuTriggerClasses = `inline-flex size-12 items-center justify-center rounded-full transition-all duration-200 md:hidden ${
+    elevated
+      ? "border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--panel-soft)]"
+      : "border border-white/15 bg-white/10 text-white/90 backdrop-blur-sm hover:bg-white/20"
+  }`;
+
   return (
     <header
       className={`fixed left-1/2 z-40 flex -translate-x-1/2 items-center justify-between px-6 py-3 transition-all duration-500 ${
@@ -126,15 +143,18 @@ export function SiteHeader() {
           <button
             type="button"
             onClick={() => setOpen((value) => !value)}
-            className={`inline-flex items-center rounded-[1.2rem] px-4 py-2.5 text-sm font-medium transition-all duration-200 ${
-              auth.status === "authenticated"
-                ? elevated
-                  ? "bg-[var(--accent-strong)] text-white shadow-[0_10px_24px_-14px_rgba(50,65,50,0.4)]"
-                  : "border border-white/20 bg-white/15 text-white backdrop-blur-sm hover:bg-white/25"
-                : elevated
-                  ? "border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--panel-soft)]"
-                  : "border border-white/15 bg-white/10 text-white/90 backdrop-blur-sm hover:bg-white/20"
-            }`}
+            className={mobileMenuTriggerClasses}
+            aria-label="Open navigation menu"
+            aria-expanded={open}
+            aria-haspopup="menu"
+          >
+            <List weight="bold" className="text-xl" />
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setOpen((value) => !value)}
+            className={desktopAccountTriggerClasses}
             aria-expanded={open}
             aria-haspopup="menu"
           >
