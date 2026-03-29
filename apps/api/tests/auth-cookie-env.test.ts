@@ -31,9 +31,14 @@ describe.sequential("auth cookie transport", () => {
     });
 
     expect(registerResponse.status).toBe(201);
-    expect(registerResponse.headers["set-cookie"]).toBeDefined();
-    expect(registerResponse.headers["set-cookie"].some((cookie: string) => cookie.includes("Secure"))).toBe(
-      false
-    );
+    const setCookieHeader = registerResponse.headers["set-cookie"];
+    const cookies = Array.isArray(setCookieHeader)
+      ? setCookieHeader
+      : setCookieHeader
+        ? [setCookieHeader]
+        : [];
+
+    expect(cookies.length).toBeGreaterThan(0);
+    expect(cookies.some((cookie) => cookie.includes("Secure"))).toBe(false);
   });
 });
