@@ -1,4 +1,6 @@
 import { apiGet } from "@/lib/api";
+import { RecipeRatingControl } from "@/components/recipes/recipe-rating-control";
+import { RecipeSaveButton } from "@/components/recipes/recipe-save-button";
 
 type RecipeDetailPageProps = {
   params: Promise<{ slug: string }>;
@@ -32,7 +34,21 @@ export default async function RecipeDetailPage({
             <p className="mt-4 max-w-[55ch] leading-relaxed text-[var(--muted)]">
               {recipe.shortDescription}
             </p>
+            <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-[var(--muted)]">
+              <span>{recipe.bookmarkCount} saves</span>
+              <span>{recipe.ratingAverage.toFixed(1)} / 5</span>
+              <span>{recipe.ratingCount} ratings</span>
+            </div>
+            <div className="mt-6">
+              <RecipeSaveButton recipeId={recipe.id} size="default" />
+            </div>
           </div>
+          <RecipeRatingControl
+            recipeId={recipe.id}
+            authorId={recipe.authorId}
+            initialAverage={recipe.ratingAverage}
+            initialCount={recipe.ratingCount}
+          />
           <div className="panel grid gap-4 p-6">
             <div>
               <p className="text-xs uppercase tracking-[0.18em] text-[var(--muted)]">

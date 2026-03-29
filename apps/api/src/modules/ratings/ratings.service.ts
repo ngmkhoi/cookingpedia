@@ -15,7 +15,7 @@ export const ratingsService = {
       throw new AppError(400, "CANNOT_RATE_OWN_RECIPE");
     }
 
-    await prisma.rating.upsert({
+    const rating = await prisma.rating.upsert({
       where: {
         userId_recipeId: {
           userId,
@@ -47,5 +47,26 @@ export const ratingsService = {
         ratingCount: aggregate._count._all
       }
     });
+
+    return {
+      rating,
+      summary: {
+        ratingAverage: aggregate._avg.score ?? 0,
+        ratingCount: aggregate._count._all
+      }
+    };
+  },
+
+  async getMine(userId: string, recipeId: string) {
+    const rating = await prisma.rating.findUnique({
+      where: {
+        userId_recipeId: {
+          userId,
+          recipeId
+        }
+      }
+    });
+
+    return rating;
   }
 };

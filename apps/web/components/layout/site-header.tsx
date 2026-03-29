@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { apiWrite } from "@/lib/api";
 import { clearAuthState } from "@/features/auth/auth-slice";
+import { clearBookmarks } from "@/features/bookmarks/bookmarks-slice";
 import { MAIN_NAV, SITE_NAME } from "@/lib/constants/site";
 import type { RootState } from "@/lib/store";
 import { buttonVariants } from "../ui/button";
@@ -60,6 +61,7 @@ export function SiteHeader() {
       body: JSON.stringify({})
     });
     dispatch(clearAuthState());
+    dispatch(clearBookmarks());
     setOpen(false);
     router.push("/");
     router.refresh();

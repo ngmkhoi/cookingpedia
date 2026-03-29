@@ -8,6 +8,14 @@ import { ratingsController } from "./ratings.controller.js";
 
 export const ratingsRouter = Router();
 
+ratingsRouter.get(
+  "/:recipeId/me",
+  requireAuth,
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    return ratingsController.getMine(req, res);
+  })
+);
+
 ratingsRouter.post(
   "/:recipeId",
   requireAuth,

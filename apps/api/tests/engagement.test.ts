@@ -54,6 +54,13 @@ describe("ratings and bookmarks", () => {
     });
 
     expect(rate.status).toBe(200);
+    expect(rate.body.rating.score).toBe(5);
+    expect(rate.body.summary.ratingCount).toBe(1);
+    expect(rate.body.summary.ratingAverage).toBe(5);
+
+    const currentRating = await reader.get(`/api/ratings/${create.body.recipe.id}/me`);
+    expect(currentRating.status).toBe(200);
+    expect(currentRating.body.rating.score).toBe(5);
 
     const bookmark = await reader.post(`/api/bookmarks/${create.body.recipe.id}`).send();
     expect(bookmark.status).toBe(200);

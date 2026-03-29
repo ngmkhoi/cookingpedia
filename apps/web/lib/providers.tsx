@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { apiGet } from "./api";
 import { Provider } from "react-redux";
 import { clearAuthState, setAuthState } from "../features/auth/auth-slice";
+import { clearBookmarks, replaceBookmarks } from "../features/bookmarks/bookmarks-slice";
 import { store } from "./store";
 
 function AuthBootstrap() {
@@ -35,9 +36,27 @@ function AuthBootstrap() {
             user: data.user
           })
         );
+
+        try {
+          const bookmarks = await apiGet<{ recipes: Array<{ id: string }> }>(
+            "/bookmarks/me",
+            true
+          );
+
+          if (!active) {
+            return;
+          }
+
+          dispatch(replaceBookmarks(bookmarks.recipes.map((recipe) => recipe.id)));
+        } catch {
+          if (active) {
+            dispatch(clearBookmarks());
+          }
+        }
       } catch {
         if (active) {
           dispatch(clearAuthState());
+          dispatch(clearBookmarks());
         }
       }
     };

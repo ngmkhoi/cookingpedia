@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { RecipeSaveButton } from "./recipe-save-button";
 import { CardSurface } from "../ui/card-surface";
 
 type RecipeCardProps = {
   recipe: {
+    id: string;
     slug: string;
     title: string;
     coverImageUrl?: string | null;
@@ -18,7 +20,10 @@ type RecipeCardProps = {
 
 export function RecipeCard({ recipe }: RecipeCardProps) {
   return (
-    <CardSurface className="panel-hover overflow-hidden">
+    <CardSurface className="panel-hover relative overflow-hidden">
+      <div className="absolute right-4 top-4 z-10">
+        <RecipeSaveButton recipeId={recipe.id} showLabel={false} className="rounded-full px-3" />
+      </div>
       <Link href={`/recipes/${recipe.slug}`} className="group block">
         <div className="img-zoom aspect-[4/3]">
           <div

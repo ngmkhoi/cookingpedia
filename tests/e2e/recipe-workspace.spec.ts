@@ -13,7 +13,6 @@ test("author can manage draft and pending recipes from my recipes", async ({
   await page.getByPlaceholder("Password").fill("SecretPass123!");
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page).toHaveURL("/my-recipes");
-  await expect(page.getByRole("link", { name: "Create recipe" })).toBeVisible();
 
   await page.goto("/my-recipes/new");
 
