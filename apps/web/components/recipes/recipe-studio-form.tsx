@@ -74,16 +74,18 @@ export function RecipeStudioForm({
         const images = values.images ?? [];
         const ingredients = values.ingredients ?? [];
         const steps = values.steps ?? [];
+        const normalizedCoverImageUrl = values.coverImageUrl?.trim() || undefined;
         const payload = {
           ...values,
+          coverImageUrl: normalizedCoverImageUrl,
           prepMinutes: Number(values.prepMinutes),
           cookMinutes: Number(values.cookMinutes),
           servings: Number(values.servings),
           images:
             images.length > 0
               ? images
-              : values.coverImageUrl
-                ? [{ imageUrl: values.coverImageUrl, sortOrder: 1 }]
+              : normalizedCoverImageUrl
+                ? [{ imageUrl: normalizedCoverImageUrl, sortOrder: 1 }]
                 : [],
           ingredients: ingredients.map((ingredient, index) => ({
             ...ingredient,
