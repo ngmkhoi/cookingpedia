@@ -1,5 +1,5 @@
-import { AppError } from "../../lib/app-error";
-import { prisma } from "../../lib/prisma";
+import { AppError } from "../../lib/app-error.js";
+import { prisma } from "../../lib/prisma.js";
 
 export const ratingsService = {
   async save(userId: string, recipeId: string, input: { score: number; comment?: string }) {

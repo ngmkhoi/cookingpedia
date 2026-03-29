@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { asyncHandler } from "../../lib/async-handler";
+import { asyncHandler } from "../../lib/async-handler.js";
 import {
   requireAuth,
   type AuthenticatedRequest
-} from "../../middleware/auth";
-import { bookmarksController } from "./bookmarks.controller";
+} from "../../middleware/auth.js";
+import { bookmarksController } from "./bookmarks.controller.js";
 
 export const bookmarksRouter = Router();
 

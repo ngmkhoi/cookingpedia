@@ -1,8 +1,8 @@
 import type { Response } from "express";
-import { ok } from "../../lib/api-response";
-import { AppError } from "../../lib/app-error";
-import type { AuthenticatedRequest } from "../../middleware/auth";
-import { usersService } from "./users.service";
+import { ok } from "../../lib/api-response.js";
+import { AppError } from "../../lib/app-error.js";
+import type { AuthenticatedRequest } from "../../middleware/auth.js";
+import { usersService } from "./users.service.js";
 
 export const usersController = {
   async getAuthor(req: AuthenticatedRequest, res: Response) {

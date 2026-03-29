@@ -1,7 +1,7 @@
 import type { Response } from "express";
-import { created, ok } from "../../lib/api-response";
-import type { AuthenticatedRequest } from "../../middleware/auth";
-import { authService } from "./auth.service";
+import { created, ok } from "../../lib/api-response.js";
+import type { AuthenticatedRequest } from "../../middleware/auth.js";
+import { authService } from "./auth.service.js";
 
 export const authController = {
   async register(req: AuthenticatedRequest, _res: Response) {

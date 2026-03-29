@@ -1,9 +1,9 @@
 import type { Response } from "express";
-import { ALLOWED_IMAGE_MIME_TYPES } from "../../constants/uploads";
-import { ok } from "../../lib/api-response";
-import { AppError } from "../../lib/app-error";
-import type { AuthenticatedRequest } from "../../middleware/auth";
-import { uploadsService } from "./uploads.service";
+import { ALLOWED_IMAGE_MIME_TYPES } from "../../constants/uploads.js";
+import { ok } from "../../lib/api-response.js";
+import { AppError } from "../../lib/app-error.js";
+import type { AuthenticatedRequest } from "../../middleware/auth.js";
+import { uploadsService } from "./uploads.service.js";
 
 export const uploadsController = {
   async createRecipeImage(req: AuthenticatedRequest, res: Response) {

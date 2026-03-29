@@ -1,6 +1,6 @@
 import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getStorage } from "firebase-admin/storage";
-import { env } from "../config/env";
+import { env } from "../config/env.js";
 
 const firebaseApp =
   getApps()[0] ??

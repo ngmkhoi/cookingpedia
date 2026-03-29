@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { adminRecipesRouter } from "../modules/admin-recipes/admin-recipes.routes";
-import { authRouter } from "../modules/auth/auth.routes";
-import { bookmarksRouter } from "../modules/bookmarks/bookmarks.routes";
-import { recipesRouter } from "../modules/recipes/recipes.routes";
-import { ratingsRouter } from "../modules/ratings/ratings.routes";
-import { uploadsRouter } from "../modules/uploads/uploads.routes";
-import { usersRouter } from "../modules/users/users.routes";
+import { adminRecipesRouter } from "../modules/admin-recipes/admin-recipes.routes.js";
+import { authRouter } from "../modules/auth/auth.routes.js";
+import { bookmarksRouter } from "../modules/bookmarks/bookmarks.routes.js";
+import { recipesRouter } from "../modules/recipes/recipes.routes.js";
+import { ratingsRouter } from "../modules/ratings/ratings.routes.js";
+import { uploadsRouter } from "../modules/uploads/uploads.routes.js";
+import { usersRouter } from "../modules/users/users.routes.js";
 
 export const router = Router();
 

@@ -3,16 +3,23 @@ import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
 const currentDir = dirname(fileURLToPath(import.meta.url));
-const apiEnvPath = resolve(currentDir, "../../.env");
+const candidateEnvPaths = [
+  resolve(process.cwd(), ".env"),
+  resolve(currentDir, "../../.env"),
+  resolve(currentDir, "../../../.env")
+];
 
-try {
-  process.loadEnvFile(apiEnvPath);
-} catch (error) {
-  const errorCode =
-    error && typeof error === "object" && "code" in error ? error.code : undefined;
+for (const envPath of candidateEnvPaths) {
+  try {
+    process.loadEnvFile(envPath);
+    break;
+  } catch (error) {
+    const errorCode =
+      error && typeof error === "object" && "code" in error ? error.code : undefined;
 
-  if (errorCode !== "ENOENT") {
-    throw error;
+    if (errorCode !== "ENOENT") {
+      throw error;
+    }
   }
 }
 

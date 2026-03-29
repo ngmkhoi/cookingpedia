@@ -1,6 +1,6 @@
 import type { NextFunction, Response } from "express";
-import { env } from "../config/env";
-import type { AuthenticatedRequest } from "./auth";
+import { env } from "../config/env.js";
+import type { AuthenticatedRequest } from "./auth.js";
 
 const safeMethods = new Set(["GET", "HEAD", "OPTIONS"]);
 

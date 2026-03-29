@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
 import { ZodError } from "zod";
-import { AppError } from "../lib/app-error";
+import { AppError } from "../lib/app-error.js";
 
 export const errorHandler = (
   error: unknown,

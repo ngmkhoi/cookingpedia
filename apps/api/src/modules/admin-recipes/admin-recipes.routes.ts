@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { asyncHandler } from "../../lib/async-handler";
-import { requireAuth } from "../../middleware/auth";
-import { requireRole } from "../../middleware/role";
-import { adminRecipesController } from "./admin-recipes.controller";
+import { asyncHandler } from "../../lib/async-handler.js";
+import { requireAuth } from "../../middleware/auth.js";
+import { requireRole } from "../../middleware/role.js";
+import { adminRecipesController } from "./admin-recipes.controller.js";
 
 export const adminRecipesRouter = Router();
 

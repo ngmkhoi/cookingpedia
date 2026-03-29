@@ -1,5 +1,5 @@
-import { AppError } from "../../lib/app-error";
-import { prisma } from "../../lib/prisma";
+import { AppError } from "../../lib/app-error.js";
+import { prisma } from "../../lib/prisma.js";
 
 const slugify = (value: string) =>
   value

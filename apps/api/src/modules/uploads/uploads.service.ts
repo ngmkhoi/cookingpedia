@@ -1,6 +1,6 @@
-import { AppError } from "../../lib/app-error";
-import { RECIPE_IMAGE_FOLDER } from "../../constants/uploads";
-import { bucket } from "../../lib/firebase";
+import { AppError } from "../../lib/app-error.js";
+import { RECIPE_IMAGE_FOLDER } from "../../constants/uploads.js";
+import { bucket } from "../../lib/firebase.js";
 
 export const uploadsService = {
   async saveRecipeImage(file: Express.Multer.File) {

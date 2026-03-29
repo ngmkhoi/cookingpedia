@@ -1,10 +1,10 @@
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import express from "express";
-import { env } from "./config/env";
-import { requireCsrf } from "./middleware/csrf";
-import { errorHandler } from "./middleware/error-handler";
-import { router } from "./routes";
+import { env } from "./config/env.js";
+import { requireCsrf } from "./middleware/csrf.js";
+import { errorHandler } from "./middleware/error-handler.js";
+import { router } from "./routes/index.js";
 
 export const app = express();
 

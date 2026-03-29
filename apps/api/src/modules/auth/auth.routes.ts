@@ -1,15 +1,15 @@
 import { Router } from "express";
-import { env } from "../../config/env";
-import { asyncHandler } from "../../lib/async-handler";
-import { AppError } from "../../lib/app-error";
+import { env } from "../../config/env.js";
+import { asyncHandler } from "../../lib/async-handler.js";
+import { AppError } from "../../lib/app-error.js";
 import {
   requireAuth,
   type AuthenticatedRequest
-} from "../../middleware/auth";
-import { validate } from "../../middleware/validate";
-import { authController } from "./auth.controller";
-import { loginSchema, registerSchema } from "./auth.schemas";
-import { authService } from "./auth.service";
+} from "../../middleware/auth.js";
+import { validate } from "../../middleware/validate.js";
+import { authController } from "./auth.controller.js";
+import { loginSchema, registerSchema } from "./auth.schemas.js";
+import { authService } from "./auth.service.js";
 
 export const authRouter = Router();
 

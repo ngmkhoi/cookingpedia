@@ -1,9 +1,9 @@
 import { Router } from "express";
 import multer from "multer";
-import { MAX_IMAGE_UPLOAD_SIZE } from "../../constants/uploads";
-import { asyncHandler } from "../../lib/async-handler";
-import { requireAuth } from "../../middleware/auth";
-import { uploadsController } from "./uploads.controller";
+import { MAX_IMAGE_UPLOAD_SIZE } from "../../constants/uploads.js";
+import { asyncHandler } from "../../lib/async-handler.js";
+import { requireAuth } from "../../middleware/auth.js";
+import { uploadsController } from "./uploads.controller.js";
 
 const upload = multer({
   storage: multer.memoryStorage(),

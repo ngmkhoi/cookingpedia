@@ -1,6 +1,6 @@
 import type { NextFunction, Request, Response } from "express";
-import { AUTH_COOKIE_NAMES } from "../constants/auth";
-import { verifyAccessToken } from "../lib/jwt";
+import { AUTH_COOKIE_NAMES } from "../constants/auth.js";
+import { verifyAccessToken } from "../lib/jwt.js";
 
 export type AuthenticatedRequest = Request & {
   auth?: {

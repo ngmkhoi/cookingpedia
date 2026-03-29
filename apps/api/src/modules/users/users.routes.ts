@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { asyncHandler } from "../../lib/async-handler";
+import { asyncHandler } from "../../lib/async-handler.js";
 import {
   requireAuth,
   type AuthenticatedRequest
-} from "../../middleware/auth";
-import { validate } from "../../middleware/validate";
-import { usersController } from "./users.controller";
-import { updateProfileSchema } from "./users.schemas";
+} from "../../middleware/auth.js";
+import { validate } from "../../middleware/validate.js";
+import { usersController } from "./users.controller.js";
+import { updateProfileSchema } from "./users.schemas.js";
 
 export const usersRouter = Router();
 

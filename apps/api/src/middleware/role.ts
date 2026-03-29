@@ -1,6 +1,6 @@
 import type { NextFunction, Response } from "express";
-import { prisma } from "../lib/prisma";
-import type { AuthenticatedRequest } from "./auth";
+import { prisma } from "../lib/prisma.js";
+import type { AuthenticatedRequest } from "./auth.js";
 
 export const requireRole = (role: "ADMIN") => {
   return async (

@@ -1,8 +1,8 @@
 import type { Response } from "express";
-import { AppError } from "../../lib/app-error";
-import { created, ok } from "../../lib/api-response";
-import type { AuthenticatedRequest } from "../../middleware/auth";
-import { publicRecipesService, recipesService } from "./recipes.service";
+import { AppError } from "../../lib/app-error.js";
+import { created, ok } from "../../lib/api-response.js";
+import type { AuthenticatedRequest } from "../../middleware/auth.js";
+import { publicRecipesService, recipesService } from "./recipes.service.js";
 
 const getRouteId = (value: string | string[]) =>
   Array.isArray(value) ? value[0] : value;

@@ -1,12 +1,12 @@
 import { Router } from "express";
-import { asyncHandler } from "../../lib/async-handler";
+import { asyncHandler } from "../../lib/async-handler.js";
 import {
   requireAuth,
   type AuthenticatedRequest
-} from "../../middleware/auth";
-import { validate } from "../../middleware/validate";
-import { recipesController } from "./recipes.controller";
-import { createRecipeSchema, updateRecipeSchema } from "./recipes.schemas";
+} from "../../middleware/auth.js";
+import { validate } from "../../middleware/validate.js";
+import { recipesController } from "./recipes.controller.js";
+import { createRecipeSchema, updateRecipeSchema } from "./recipes.schemas.js";
 
 export const recipesRouter = Router();
 

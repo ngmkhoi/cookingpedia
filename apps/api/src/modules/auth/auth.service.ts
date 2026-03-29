@@ -1,9 +1,9 @@
 import argon2 from "argon2";
 import type { UserRole } from "@prisma/client";
-import { AUTH_COOKIE_NAMES } from "../../constants/auth";
-import { AppError } from "../../lib/app-error";
-import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../../lib/jwt";
-import { prisma } from "../../lib/prisma";
+import { AUTH_COOKIE_NAMES } from "../../constants/auth.js";
+import { AppError } from "../../lib/app-error.js";
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from "../../lib/jwt.js";
+import { prisma } from "../../lib/prisma.js";
 
 const REFRESH_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 

@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { asyncHandler } from "../../lib/async-handler";
+import { asyncHandler } from "../../lib/async-handler.js";
 import {
   requireAuth,
   type AuthenticatedRequest
-} from "../../middleware/auth";
-import { ratingsController } from "./ratings.controller";
+} from "../../middleware/auth.js";
+import { ratingsController } from "./ratings.controller.js";
 
 export const ratingsRouter = Router();
 
