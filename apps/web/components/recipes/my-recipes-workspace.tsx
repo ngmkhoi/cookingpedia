@@ -97,6 +97,10 @@ export function MyRecipesWorkspace() {
       ) : null}
       {recipes.map((recipe) => {
         const actionPending = isPending && pendingRecipeId === recipe.id;
+        const viewHref =
+          recipe.status === "PUBLISHED"
+            ? `/recipes/${recipe.slug}`
+            : `/my-recipes/${recipe.id}`;
 
         return (
           <CardSurface key={recipe.id} className="grid gap-5 p-5 md:grid-cols-[1fr_auto] md:items-start">
@@ -122,7 +126,7 @@ export function MyRecipesWorkspace() {
             </div>
 
             <div className="flex flex-wrap items-center gap-2 md:justify-end">
-              <Link href={`/recipes/${recipe.slug}`}>
+              <Link href={viewHref}>
                 <Button variant="secondary" size="sm">
                   View
                 </Button>

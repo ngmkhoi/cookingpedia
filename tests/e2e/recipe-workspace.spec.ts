@@ -39,6 +39,10 @@ test("author can manage draft and pending recipes from my recipes", async ({
     )
   ).toBe(false);
   await expect(page.getByText(recipeTitle)).toBeVisible();
+  await page.getByRole("link", { name: "View" }).click();
+  await expect(page).toHaveURL(/\/my-recipes\/.+$/);
+  await expect(page.getByRole("heading", { name: recipeTitle })).toBeVisible();
+  await page.goto("/my-recipes");
   await expect(page.getByRole("button", { name: "Submit for review" })).toBeVisible();
 
   await page.getByRole("link", { name: "Edit" }).click();
@@ -52,6 +56,10 @@ test("author can manage draft and pending recipes from my recipes", async ({
 
   await page.getByRole("button", { name: "Submit for review" }).click();
   await expect(page.getByText("Pending")).toBeVisible();
+  await page.getByRole("link", { name: "View" }).click();
+  await expect(page).toHaveURL(/\/my-recipes\/.+$/);
+  await expect(page.getByRole("heading", { name: recipeTitle })).toBeVisible();
+  await page.goto("/my-recipes");
   await expect(page.getByRole("button", { name: "Move back to draft" })).toBeVisible();
 
   await page.getByRole("button", { name: "Move back to draft" }).click();
