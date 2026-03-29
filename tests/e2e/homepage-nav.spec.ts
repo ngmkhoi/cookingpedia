@@ -49,6 +49,30 @@ test("homepage surfaces discovery sections and guest auth gate", async ({
   await expect(page.getByText("Sign in to continue")).toBeVisible();
 });
 
+test("auth dialog overlays the header after scroll and closes on backdrop click or escape", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.evaluate(() => window.scrollTo(0, 800));
+  await page.getByRole("button", { name: "Share a recipe" }).click();
+
+  const overlay = page.getByTestId("auth-dialog-overlay");
+  const panel = page.getByTestId("auth-dialog-panel");
+
+  await expect(overlay).toBeVisible();
+  await expect(panel).toBeVisible();
+  await expect(overlay).toHaveCSS("position", "fixed");
+  await expect(overlay).toHaveCSS("z-index", "60");
+
+  await overlay.click({ position: { x: 12, y: 12 } });
+  await expect(page.getByText("Sign in to continue")).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Share a recipe" }).click();
+  await expect(page.getByText("Sign in to continue")).toBeVisible();
+  await page.keyboard.press("Escape");
+  await expect(page.getByText("Sign in to continue")).toHaveCount(0);
+});
+
 test("homepage discovery entry points deep-link into the unified search page", async ({
   page
 }) => {

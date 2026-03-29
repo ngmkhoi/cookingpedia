@@ -2,6 +2,8 @@
 
 import { X } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/lib/store";
 import { AuthForm } from "./auth-form";
@@ -17,8 +19,34 @@ export function AuthDialog({
 }) {
   const auth = useSelector((state: RootState) => state.auth);
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
 
-  if (!open) {
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [onClose, open]);
+
+  if (!open || !mounted) {
     return null;
   }
 
@@ -30,9 +58,17 @@ export function AuthDialog({
     return null;
   }
 
-  return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center bg-[rgba(22,32,25,0.42)] p-4">
-      <div className="panel relative w-full max-w-xl overflow-hidden p-8">
+  return createPortal(
+    <div
+      data-testid="auth-dialog-overlay"
+      className="fixed inset-0 z-[60] flex items-center justify-center bg-[rgba(22,32,25,0.42)] p-4"
+      onClick={onClose}
+    >
+      <div
+        data-testid="auth-dialog-panel"
+        className="panel relative w-full max-w-xl overflow-hidden p-8"
+        onClick={(event) => event.stopPropagation()}
+      >
         <button
           type="button"
           onClick={onClose}
@@ -69,6 +105,7 @@ export function AuthDialog({
           Continue browsing
         </button>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
