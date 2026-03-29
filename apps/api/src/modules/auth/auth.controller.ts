@@ -30,5 +30,9 @@ export const authController = {
   async me(req: AuthenticatedRequest) {
     const user = await authService.getCurrentUser(req.auth!.userId);
     return ok({ user });
+  },
+
+  async availability(input: { email?: string; username?: string }) {
+    return ok(await authService.availability(input));
   }
 };

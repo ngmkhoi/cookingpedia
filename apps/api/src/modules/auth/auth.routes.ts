@@ -12,11 +12,14 @@ import { loginSchema, registerSchema } from "./auth.schemas.js";
 import { authService } from "./auth.service.js";
 
 export const authRouter = Router();
+const getQueryValue = (value: unknown) =>
+  Array.isArray(value) ? (typeof value[0] === "string" ? value[0] : undefined) : typeof value === "string" ? value : undefined;
 
+const webOrigin = new URL(env.WEB_ORIGIN);
 const cookieOptions = {
   httpOnly: true,
   sameSite: "lax" as const,
-  secure: process.env.NODE_ENV === "production",
+  secure: webOrigin.protocol === "https:",
   path: "/",
   ...(env.COOKIE_DOMAIN ? { domain: env.COOKIE_DOMAIN } : {})
 };
@@ -46,6 +49,18 @@ authRouter.post(
       .cookie(authService.refreshCookie, session.refreshToken, cookieOptions)
       .status(200)
       .json(body);
+  })
+);
+
+authRouter.get(
+  "/availability",
+  asyncHandler(async (req, res) => {
+    const body = await authController.availability({
+      email: getQueryValue(req.query.email),
+      username: getQueryValue(req.query.username)
+    });
+
+    return res.status(200).json(body);
   })
 );
 

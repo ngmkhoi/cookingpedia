@@ -10,14 +10,19 @@ export const errorHandler = (
 ) => {
   if (error instanceof AppError) {
     return res.status(error.statusCode).json({
-      message: error.code
+      message: error.code,
+      ...(error.fieldErrors ? { fieldErrors: error.fieldErrors } : {})
     });
   }
 
   if (error instanceof ZodError) {
     return res.status(400).json({
       message: "VALIDATION_FAILED",
-      issues: error.flatten()
+      issues: error.flatten(),
+      issueDetails: error.issues.map((issue) => ({
+        path: issue.path,
+        message: issue.message
+      }))
     });
   }
 
