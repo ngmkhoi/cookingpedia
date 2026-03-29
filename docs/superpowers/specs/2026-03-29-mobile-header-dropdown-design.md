@@ -4,13 +4,13 @@
 
 The current header works well on desktop and tablet, but on mobile the top bar still tries to carry too many primary navigation actions inline. Search, Trending, and the account trigger compete for horizontal space, which makes the header feel cramped and weakens tap clarity.
 
-This change keeps the desktop and tablet experience intact and only adjusts mobile behavior. On small screens, the header should collapse its primary navigation into the existing account-led trigger so the top bar remains compact while still exposing both browsing and account actions.
+This change keeps the desktop and tablet experience intact and only adjusts mobile behavior. On small screens, the header should collapse its primary navigation and account actions behind a single hamburger trigger so the top bar remains compact while still exposing the full navigation system.
 
 ## Goals
 
 - Preserve the current desktop and tablet header behavior exactly
-- Reduce mobile header clutter without introducing a separate hamburger system
-- Keep navigation and account access unified on mobile
+- Reduce mobile header clutter with one explicit mobile-only menu trigger
+- Keep navigation and account access unified inside the same mobile dropdown
 - Maintain the current Cookpedia visual language and dropdown pattern
 
 ## Non-Goals
@@ -25,13 +25,7 @@ This change keeps the desktop and tablet experience intact and only adjusts mobi
 
 The header should behave differently by screen size, not by product area.
 
-Desktop and tablet already communicate:
-
-- brand
-- main navigation
-- account entry
-
-clearly enough.
+Desktop and tablet already communicate brand, navigation, and account entry clearly enough.
 
 Mobile is the only breakpoint where the current inline layout stops paying off. The solution should therefore be responsive simplification, not a full navigation rewrite.
 
@@ -52,34 +46,22 @@ Keep:
 On mobile, the visible header should collapse to:
 
 - logo on the left
-- one account-led trigger on the right
+- one hamburger trigger on the right
 
 The standalone `Search` and `Trending` controls should no longer appear inline in the bar on mobile.
 
 ## Trigger Model
 
-The mobile trigger should remain account-led rather than introducing a new menu button.
-
-### Anonymous User
-
-Trigger label:
-
-- `Login / Register`
+The mobile trigger should become a dedicated hamburger icon.
 
 Reason:
 
-- keeps the account-first framing already established in the current header
-- is more explicit than a generic `Menu`
-- still works as the single mobile access point for both navigation and auth
+- it is visually cleaner than the current long account-led trigger
+- it makes the mobile bar feel lighter and more balanced
+- it avoids cramped text labels in the top-right corner
+- it still supports a single unified dropdown for all navigation and account actions
 
-### Authenticated User
-
-Trigger label:
-
-- existing user display label where it fits
-- if the name becomes visually awkward on mobile, fallback to `Profile`
-
-This keeps the trigger semantically aligned with the user state without overloading the small-screen header.
+The account state should influence the dropdown contents, not the trigger shape itself.
 
 ## Dropdown Contents
 
@@ -154,7 +136,7 @@ Preferred implementation approach:
 
 - keep one header component
 - hide the standalone nav links below the mobile breakpoint
-- keep one dropdown trigger
+- replace the mobile account-led trigger with a hamburger icon trigger
 - insert `Search` and `Trending` into the dropdown menu content on mobile
 
 This avoids maintaining separate desktop and mobile navigation systems.
@@ -177,9 +159,10 @@ The dropdown should not overflow horizontally or produce awkward clipping on nar
 At a mobile viewport, verify:
 
 - inline `Search` and `Trending` are no longer visible in the header
-- the account-led trigger is visible
+- the hamburger trigger is visible
 - opening the trigger reveals `Search` and `Trending`
 - anonymous state reveals `Login` and `Register`
+- authenticated state reveals `Profile` plus the existing account actions
 
 ### Desktop Regression
 
@@ -192,14 +175,14 @@ At desktop viewport, verify:
 
 Check manually that:
 
-- the trigger label fits comfortably on mobile
+- the hamburger trigger feels obvious and easy to hit
 - the dropdown does not feel cramped
 - navigation remains understandable without the separate inline links
 
 ## Acceptance Criteria
 
 - desktop and tablet header behavior stays unchanged
-- mobile header only shows logo plus one account-led trigger
+- mobile header only shows logo plus one hamburger trigger
 - mobile dropdown includes `Search` and `Trending`
 - anonymous mobile state includes `Login` and `Register`
 - authenticated mobile state keeps account actions available
@@ -224,6 +207,6 @@ This is appropriately small for a single implementation pass. It affects one com
 The key rule is explicit:
 
 - desktop/tablet unchanged
-- mobile collapses top-level nav into the existing account-led trigger
+- mobile collapses top-level nav and account actions into one hamburger-triggered dropdown
 
 That should be sufficient to write an implementation plan without guessing the intended behavior.
