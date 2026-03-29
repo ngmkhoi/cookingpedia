@@ -6,6 +6,7 @@ node_modules
 dist
 coverage
 .env
+.env.vps
 .env.local
 .env.*.local
 package-lock.json
@@ -18,3 +19,4 @@ playwright-report
 test-results
 .gitnexus
 *.tsbuildinfo
+CLAUDE.md
