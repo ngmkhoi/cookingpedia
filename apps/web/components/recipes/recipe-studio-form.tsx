@@ -382,15 +382,20 @@ export function RecipeStudioForm({
       </CardSurface>
 
       <CardSurface className="grid gap-4 p-6">
-        {ingredients.fields.map((field, index) => (
+        {ingredients.fields.map((field, index) => {
+          const ingredientNameId = `ingredient-name-${index}`;
+          const ingredientQuantityId = `ingredient-quantity-${index}`;
+          const ingredientUnitId = `ingredient-unit-${index}`;
+
+          return (
           <div key={field.id} className="grid gap-3 md:grid-cols-3">
             <FormFieldShell
               label={`Ingredient ${index + 1}`}
-              htmlFor={`ingredient-name-${field.id}`}
+              htmlFor={ingredientNameId}
               error={form.formState.errors.ingredients?.[index]?.name?.message}
             >
               <Input
-                id={`ingredient-name-${field.id}`}
+                id={ingredientNameId}
                 aria-invalid={Boolean(form.formState.errors.ingredients?.[index]?.name)}
                 {...form.register(`ingredients.${index}.name`, {
                   validate: (value) => validateMinLength("Ingredient name", 1)(value)
@@ -400,11 +405,11 @@ export function RecipeStudioForm({
             </FormFieldShell>
             <FormFieldShell
               label="Quantity"
-              htmlFor={`ingredient-quantity-${field.id}`}
+              htmlFor={ingredientQuantityId}
               error={form.formState.errors.ingredients?.[index]?.quantity?.message}
             >
               <Input
-                id={`ingredient-quantity-${field.id}`}
+                id={ingredientQuantityId}
                 type="number"
                 step="0.01"
                 aria-invalid={Boolean(form.formState.errors.ingredients?.[index]?.quantity)}
@@ -417,11 +422,11 @@ export function RecipeStudioForm({
             </FormFieldShell>
             <FormFieldShell
               label="Unit"
-              htmlFor={`ingredient-unit-${field.id}`}
+              htmlFor={ingredientUnitId}
               error={form.formState.errors.ingredients?.[index]?.unit?.message}
             >
               <Input
-                id={`ingredient-unit-${field.id}`}
+                id={ingredientUnitId}
                 aria-invalid={Boolean(form.formState.errors.ingredients?.[index]?.unit)}
                 {...form.register(`ingredients.${index}.unit`, {
                   validate: (value) => validateMinLength("Unit", 1)(value)
@@ -430,7 +435,8 @@ export function RecipeStudioForm({
               />
             </FormFieldShell>
           </div>
-        ))}
+          );
+        })}
         <Button
           type="button"
           variant="secondary"
@@ -449,23 +455,27 @@ export function RecipeStudioForm({
       </CardSurface>
 
       <CardSurface className="grid gap-4 p-6">
-        {steps.fields.map((field, index) => (
-          <FormFieldShell
-            key={field.id}
-            label={`Step ${index + 1}`}
-            htmlFor={`step-instruction-${field.id}`}
-            error={form.formState.errors.steps?.[index]?.instruction?.message}
-          >
-            <Textarea
-              id={`step-instruction-${field.id}`}
-              aria-invalid={Boolean(form.formState.errors.steps?.[index]?.instruction)}
-              {...form.register(`steps.${index}.instruction`, {
-                validate: (value) => validateMinLength("Step instruction", 5)(value)
-              })}
-              placeholder={`Step ${index + 1}`}
-            />
-          </FormFieldShell>
-        ))}
+        {steps.fields.map((field, index) => {
+          const stepInstructionId = `step-instruction-${index}`;
+
+          return (
+            <FormFieldShell
+              key={field.id}
+              label={`Step ${index + 1}`}
+              htmlFor={stepInstructionId}
+              error={form.formState.errors.steps?.[index]?.instruction?.message}
+            >
+              <Textarea
+                id={stepInstructionId}
+                aria-invalid={Boolean(form.formState.errors.steps?.[index]?.instruction)}
+                {...form.register(`steps.${index}.instruction`, {
+                  validate: (value) => validateMinLength("Step instruction", 5)(value)
+                })}
+                placeholder={`Step ${index + 1}`}
+              />
+            </FormFieldShell>
+          );
+        })}
         <Button
           type="button"
           variant="secondary"

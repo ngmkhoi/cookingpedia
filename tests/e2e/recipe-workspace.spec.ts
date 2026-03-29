@@ -3,6 +3,13 @@ import { expect, test } from "@playwright/test";
 test("author can manage draft and pending recipes from my recipes", async ({
   page
 }) => {
+  const consoleErrors: string[] = [];
+  page.on("console", (message) => {
+    if (message.type() === "error") {
+      consoleErrors.push(message.text());
+    }
+  });
+
   const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   const recipeTitle = `Weeknight Lemongrass Chicken ${suffix}`;
 
@@ -26,8 +33,22 @@ test("author can manage draft and pending recipes from my recipes", async ({
   await page.getByRole("button", { name: "Save draft" }).click();
 
   await expect(page).toHaveURL("/my-recipes");
+  expect(
+    consoleErrors.some((message) =>
+      message.includes("hydrated but some attributes of the server rendered HTML didn't match")
+    )
+  ).toBe(false);
   await expect(page.getByText(recipeTitle)).toBeVisible();
   await expect(page.getByRole("button", { name: "Submit for review" })).toBeVisible();
+
+  await page.getByRole("link", { name: "Edit" }).click();
+  await expect(page).toHaveURL(/\/my-recipes\/.+\/edit/);
+  expect(
+    consoleErrors.some((message) =>
+      message.includes("hydrated but some attributes of the server rendered HTML didn't match")
+    )
+  ).toBe(false);
+  await page.goto("/my-recipes");
 
   await page.getByRole("button", { name: "Submit for review" }).click();
   await expect(page.getByText("Pending")).toBeVisible();
