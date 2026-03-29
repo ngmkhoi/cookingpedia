@@ -237,7 +237,7 @@ export function AuthForm({
         return;
       }
       window.location.href =
-        me.user.role === "ADMIN" ? "/admin/recipes/pending" : "/profile";
+        me.user.role === "ADMIN" ? "/admin/recipes/pending" : "/my-recipes";
     } catch (error) {
       const { formError: nextFormError } = applyApiFormErrors<AuthFormValues>(
         error,

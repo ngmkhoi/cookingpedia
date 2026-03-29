@@ -7,7 +7,7 @@ async function registerUser(page: Parameters<typeof test>[0]["page"], suffix: st
   await page.getByPlaceholder("Email").fill(`bao-${suffix}@cookpedia.test`);
   await page.getByPlaceholder("Password").fill("SecretPass123!");
   await page.getByRole("button", { name: "Create account" }).click();
-  await expect(page).toHaveURL("/profile");
+  await expect(page).toHaveURL("/my-recipes");
 }
 
 test("register form shows inline validation and debounced availability states", async ({
@@ -56,7 +56,7 @@ test("recipe studio shows inline field errors before submit", async ({ page }) =
   const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
   await registerUser(page, suffix);
 
-  await page.goto("/profile/recipes/new");
+  await page.goto("/my-recipes/new");
   await page.getByPlaceholder("Recipe title").fill("Hi");
   await page.getByPlaceholder("Short description").fill("short");
   await page.getByPlaceholder("Cover image URL").fill("bad-url");

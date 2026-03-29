@@ -16,7 +16,7 @@ export function HeroActions() {
 
   const handleShareRecipe = () => {
     if (auth.status === "authenticated") {
-      router.push("/profile/recipes/new");
+      router.push("/my-recipes/new");
       return;
     }
 
@@ -50,7 +50,7 @@ export function HeroActions() {
       <AuthDialog
         open={authDialogOpen}
         onClose={() => setAuthDialogOpen(false)}
-        destination="/profile/recipes/new"
+        destination="/my-recipes/new"
       />
     </>
   );

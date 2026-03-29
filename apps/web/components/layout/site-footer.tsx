@@ -18,8 +18,8 @@ export function SiteFooter() {
   const accountLinks =
     auth.status === "authenticated"
       ? [
-          { href: "/profile", label: "Profile" },
-          { href: "/profile", label: "Saved" },
+          { href: "/my-recipes", label: "My Recipes" },
+          { href: "/saved", label: "Saved" },
           { href: "/settings/profile", label: "Settings" }
         ]
       : [

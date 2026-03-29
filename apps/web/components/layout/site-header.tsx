@@ -197,18 +197,7 @@ export function SiteHeader() {
                     </Link>
                   ) : null}
                   <Link
-                    href="/profile"
-                    className="rounded-[1rem] px-4 py-3 text-sm transition-colors hover:bg-black/5"
-                    onClick={() => setOpen(false)}
-                  >
-                    <UserCircle
-                      weight="duotone"
-                      className="mr-2 inline text-base"
-                    />
-                    Profile
-                  </Link>
-                  <Link
-                    href="/profile"
+                    href="/my-recipes"
                     className="rounded-[1rem] px-4 py-3 text-sm transition-colors hover:bg-black/5"
                     onClick={() => setOpen(false)}
                   >
@@ -219,7 +208,7 @@ export function SiteHeader() {
                     My Recipes
                   </Link>
                   <Link
-                    href="/profile"
+                    href="/saved"
                     className="rounded-[1rem] px-4 py-3 text-sm transition-colors hover:bg-black/5"
                     onClick={() => setOpen(false)}
                   >

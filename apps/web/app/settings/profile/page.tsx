@@ -31,7 +31,7 @@ export default function ProfileSettingsPage() {
             method: "PATCH",
             body: JSON.stringify(values)
           });
-          window.location.href = "/profile";
+          window.location.href = "/settings/profile";
         })}
         className="panel grid max-w-3xl gap-4 p-6"
       >

@@ -72,6 +72,22 @@ recipesRouter.patch(
   })
 );
 
+recipesRouter.delete(
+  "/:id",
+  requireAuth,
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    return recipesController.deleteOwned(req, res);
+  })
+);
+
+recipesRouter.post(
+  "/:id/move-to-draft",
+  requireAuth,
+  asyncHandler(async (req: AuthenticatedRequest, res) => {
+    return recipesController.moveToDraft(req, res);
+  })
+);
+
 recipesRouter.post(
   "/:id/submit",
   requireAuth,

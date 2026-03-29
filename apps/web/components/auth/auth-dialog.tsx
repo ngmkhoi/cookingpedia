@@ -9,7 +9,7 @@ import { AuthForm } from "./auth-form";
 export function AuthDialog({
   open,
   onClose,
-  destination = "/profile"
+  destination = "/my-recipes"
 }: {
   open: boolean;
   onClose: () => void;

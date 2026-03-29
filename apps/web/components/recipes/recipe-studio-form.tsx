@@ -215,7 +215,7 @@ export function RecipeStudioForm({
           }
         }
 
-        window.location.href = "/profile";
+        window.location.href = "/my-recipes";
       })}
       className="grid gap-8"
     >

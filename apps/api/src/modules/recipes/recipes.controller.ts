@@ -64,6 +64,19 @@ export const recipesController = {
     return res.status(200).json(ok({ recipe: serializeRecipe(recipe) }));
   },
 
+  async deleteOwned(req: AuthenticatedRequest, res: Response) {
+    await recipesService.deleteOwned(getRouteId(req.params.id), req.auth!.userId);
+    return res.status(200).json(ok({ message: "RECIPE_DELETED" }));
+  },
+
+  async moveToDraft(req: AuthenticatedRequest, res: Response) {
+    const recipe = await recipesService.moveToDraft(
+      getRouteId(req.params.id),
+      req.auth!.userId
+    );
+    return res.status(200).json(ok({ recipe: serializeRecipe(recipe) }));
+  },
+
   async submit(req: AuthenticatedRequest, res: Response) {
     const recipe = await recipesService.submit(
       getRouteId(req.params.id),

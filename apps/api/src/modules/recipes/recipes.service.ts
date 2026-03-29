@@ -196,6 +196,50 @@ export const recipesService = {
     });
   },
 
+  async deleteOwned(recipeId: string, authorId: string) {
+    const recipe = await prisma.recipe.findFirst({
+      where: {
+        id: recipeId,
+        authorId,
+        status: { in: ["DRAFT", "REJECTED"] }
+      }
+    });
+
+    if (!recipe) {
+      throw new AppError(404, "RECIPE_NOT_FOUND");
+    }
+
+    await prisma.recipe.delete({
+      where: { id: recipeId }
+    });
+  },
+
+  async moveToDraft(recipeId: string, authorId: string) {
+    const recipe = await prisma.recipe.findFirst({
+      where: {
+        id: recipeId,
+        authorId,
+        status: "PENDING"
+      }
+    });
+
+    if (!recipe) {
+      throw new AppError(404, "RECIPE_NOT_FOUND");
+    }
+
+    return prisma.recipe.update({
+      where: { id: recipeId },
+      data: {
+        status: "DRAFT",
+        submittedAt: null,
+        reviewedAt: null,
+        reviewedById: null,
+        rejectionReason: null
+      },
+      include: recipeInclude
+    });
+  },
+
   async submit(recipeId: string, authorId: string) {
     const recipe = await prisma.recipe.findFirst({
       where: { id: recipeId, authorId },
