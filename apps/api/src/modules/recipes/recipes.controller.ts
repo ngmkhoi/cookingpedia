@@ -13,12 +13,17 @@ const recipeDifficulties = new Set(["EASY", "MEDIUM", "HARD"]);
 const serializeRecipe = (recipe: {
   locale: "VI" | "EN";
   coverImageUrl?: string | null;
+  images?: Array<{ caption?: string | null; [key: string]: unknown }>;
   ingredients?: Array<{ quantity: { toString(): string } | number | string }>;
   [key: string]: unknown;
 }) => ({
   ...recipe,
   coverImageUrl: recipe.coverImageUrl ?? undefined,
   locale: toApiLocale(recipe.locale),
+  images: recipe.images?.map((image) => ({
+    ...image,
+    caption: image.caption ?? undefined
+  })),
   ingredients: recipe.ingredients?.map((ingredient) => ({
     ...ingredient,
     quantity: Number(ingredient.quantity)

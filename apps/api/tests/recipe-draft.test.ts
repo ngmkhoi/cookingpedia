@@ -46,6 +46,53 @@ describe("recipe drafts", () => {
     expect(submitResponse.status).toBe(400);
   });
 
+  it("round-trips editable recipes with images back through patch", async () => {
+    const agent = request.agent(app);
+    const suffix = Date.now().toString(36);
+
+    await agent.post("/api/auth/register").send({
+      email: `roundtrip-${suffix}@cookpedia.test`,
+      password: "SecretPass123!",
+      displayName: "Round Trip User",
+      username: `roundtrip-${suffix}`
+    });
+
+    const createResponse = await agent.post("/api/recipes").send({
+      title: "Round Trip Fish Sauce Wings",
+      shortDescription: "Sticky wings with a glossy fish sauce caramel glaze",
+      prepMinutes: 15,
+      cookMinutes: 30,
+      servings: 4,
+      category: "Dinner",
+      cuisine: "Vietnamese",
+      difficulty: "MEDIUM",
+      coverImageUrl: "https://example.com/wings.jpg",
+      images: [{ imageUrl: "https://example.com/wings.jpg", sortOrder: 1 }],
+      ingredients: [{ name: "Chicken wings", quantity: 800, unit: "g", sortOrder: 1 }],
+      steps: [{ stepNumber: 1, instruction: "Roast until the skin turns deeply golden." }]
+    });
+
+    expect(createResponse.status).toBe(201);
+
+    const editableResponse = await agent.get(
+      `/api/recipes/${createResponse.body.recipe.id}/edit`
+    );
+
+    expect(editableResponse.status).toBe(200);
+
+    const updateResponse = await agent
+      .patch(`/api/recipes/${createResponse.body.recipe.id}`)
+      .send({
+        ...editableResponse.body.recipe,
+        title: "Round Trip Fish Sauce Wings Updated"
+      });
+
+    expect(updateResponse.status).toBe(200);
+    expect(updateResponse.body.recipe.title).toBe(
+      "Round Trip Fish Sauce Wings Updated"
+    );
+  });
+
   it("deletes draft and rejected recipes but not pending recipes", async () => {
     const agent = request.agent(app);
     const suffix = `draft-${Date.now().toString(36)}`;
