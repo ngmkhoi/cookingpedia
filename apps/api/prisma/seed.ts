@@ -97,7 +97,7 @@ const sampleRecipes = [
     ]
   },
   {
-    slug: "crispy-morning-banquette",
+    slug: "crispy-morning-baguette-board",
     title: "Crispy morning baguette board",
     shortDescription: "A quick breakfast board with eggs, herbs, and buttered toast.",
     category: "Breakfast",
@@ -118,19 +118,75 @@ const sampleRecipes = [
       { stepNumber: 1, instruction: "Toast the baguette until deeply crisp." },
       { stepNumber: 2, instruction: "Serve with soft eggs, herbs, and salted butter." }
     ]
+  },
+  {
+    slug: "tamarind-shrimp-skillet",
+    title: "Tamarind shrimp skillet",
+    shortDescription: "Fast shrimp in a tangy tamarind glaze with charred edges.",
+    category: "Dinner",
+    cuisine: "Vietnamese",
+    difficulty: RecipeDifficulty.MEDIUM,
+    coverImageUrl: "https://images.unsplash.com/photo-1516684732162-798a0062be99?auto=format&fit=crop&w=1600&q=80",
+    bookmarkCount: 8,
+    ratingAverage: 4.4,
+    prepMinutes: 12,
+    cookMinutes: 14,
+    servings: 3,
+    locale: "EN" as const,
+    ingredients: [
+      { name: "Shrimp", quantity: 500, unit: "g", sortOrder: 1 },
+      { name: "Tamarind concentrate", quantity: 3, unit: "tbsp", sortOrder: 2 }
+    ],
+    steps: [
+      { stepNumber: 1, instruction: "Whisk tamarind, sugar, and fish sauce into a glaze." },
+      { stepNumber: 2, instruction: "Sear the shrimp and reduce the glaze until glossy." }
+    ]
+  },
+  {
+    slug: "charcoal-tofu-salad",
+    title: "Charred tofu salad",
+    shortDescription: "Crisp greens, charred tofu, and a sharp sesame-lime dressing.",
+    category: "Lunch",
+    cuisine: "Asian",
+    difficulty: RecipeDifficulty.EASY,
+    coverImageUrl: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=1600&q=80",
+    bookmarkCount: 6,
+    ratingAverage: 4.3,
+    prepMinutes: 16,
+    cookMinutes: 12,
+    servings: 2,
+    locale: "EN" as const,
+    ingredients: [
+      { name: "Firm tofu", quantity: 300, unit: "g", sortOrder: 1 },
+      { name: "Lettuce", quantity: 1, unit: "head", sortOrder: 2 }
+    ],
+    steps: [
+      { stepNumber: 1, instruction: "Sear tofu until dark at the edges and lightly crisp." },
+      { stepNumber: 2, instruction: "Toss with greens and a sesame-lime dressing." }
+    ]
   }
 ] as const;
 
-const pendingRecipe = {
-  slug: "pending-black-pepper-chicken",
-  title: "Pending black pepper chicken",
-  shortDescription: "A queued moderation sample with pepper heat and glossy sauce.",
+const legacySeedRecipeSlugs = [
+  "crispy-morning-banquette",
+  "pending-black-pepper-chicken"
+] as const;
+
+const localOnlyUser = {
+  email: "editor@cookpedia.local",
+  username: "cookpedia-editor",
+  displayName: "Cookpedia Editor",
+  password: "EditorPass123!"
+} as const;
+
+const localOnlyPendingRecipe = {
+  slug: "black-pepper-chicken-weeknight",
+  title: "Black pepper chicken, weeknight style",
+  shortDescription: "A local-only moderation sample with pepper heat and glossy sauce.",
   category: "Dinner",
   cuisine: "Vietnamese",
   difficulty: RecipeDifficulty.MEDIUM,
   coverImageUrl: "https://images.unsplash.com/photo-1518492104633-130d0cc84637?auto=format&fit=crop&w=1600&q=80",
-  bookmarkCount: 0,
-  ratingAverage: 0,
   prepMinutes: 18,
   cookMinutes: 16,
   servings: 3,
@@ -145,17 +201,26 @@ const pendingRecipe = {
   ]
 } as const;
 
+function getSeedProfile() {
+  const profile = process.env.SEED_DATA_PROFILE ?? (process.env.NODE_ENV === "production" ? "production" : "local");
+
+  if (profile !== "production" && profile !== "local") {
+    throw new Error(`Unsupported SEED_DATA_PROFILE: ${profile}`);
+  }
+
+  return profile;
+}
+
 async function main() {
   const email = process.env.SEED_ADMIN_EMAIL ?? "admin@cookpedia.local";
   const password = process.env.SEED_ADMIN_PASSWORD ?? "AdminPass123!";
   const username = process.env.SEED_ADMIN_USERNAME ?? "cookpedia-admin";
   const displayName = process.env.SEED_ADMIN_DISPLAY_NAME ?? "Cookpedia Admin";
+  const seedProfile = getSeedProfile();
+  const isProductionSeed = seedProfile === "production";
   const adminPasswordHash = await argon2.hash(password, { type: argon2.argon2id });
-  const editorPasswordHash = await argon2.hash("EditorPass123!", {
-    type: argon2.argon2id
-  });
 
-  await prisma.user.upsert({
+  const admin = await prisma.user.upsert({
     where: { email },
     update: {
       role: UserRole.ADMIN,
@@ -172,34 +237,50 @@ async function main() {
     }
   });
 
-  const editor = await prisma.user.upsert({
-    where: { email: "editor@cookpedia.local" },
-    update: {
-      username: "cookpedia-editor",
-      displayName: "Cookpedia Editor",
-      passwordHash: editorPasswordHash
-    },
-    create: {
-      email: "editor@cookpedia.local",
-      username: "cookpedia-editor",
-      displayName: "Cookpedia Editor",
-      role: UserRole.USER,
-      passwordHash: editorPasswordHash
-    }
-  });
+  let localEditorId: string | null = null;
+
+  if (!isProductionSeed) {
+    const editorPasswordHash = await argon2.hash(localOnlyUser.password, {
+      type: argon2.argon2id
+    });
+
+    const editor = await prisma.user.upsert({
+      where: { email: localOnlyUser.email },
+      update: {
+        username: localOnlyUser.username,
+        displayName: localOnlyUser.displayName,
+        passwordHash: editorPasswordHash
+      },
+      create: {
+        email: localOnlyUser.email,
+        username: localOnlyUser.username,
+        displayName: localOnlyUser.displayName,
+        role: UserRole.USER,
+        passwordHash: editorPasswordHash
+      }
+    });
+
+    localEditorId = editor.id;
+  }
 
   await prisma.recipe.deleteMany({
     where: {
       slug: {
-        in: [...sampleRecipes.map((recipe) => recipe.slug), pendingRecipe.slug]
+        in: [
+          ...sampleRecipes.map((recipe) => recipe.slug),
+          ...legacySeedRecipeSlugs,
+          localOnlyPendingRecipe.slug
+        ]
       }
     }
   });
 
+  const publishedAuthorId = isProductionSeed ? admin.id : (localEditorId ?? admin.id);
+
   for (const recipe of sampleRecipes) {
     await prisma.recipe.create({
       data: {
-        authorId: editor.id,
+        authorId: publishedAuthorId,
         title: recipe.title,
         slug: recipe.slug,
         shortDescription: recipe.shortDescription,
@@ -228,33 +309,35 @@ async function main() {
     });
   }
 
-  await prisma.recipe.create({
-    data: {
-      authorId: editor.id,
-      title: pendingRecipe.title,
-      slug: pendingRecipe.slug,
-      shortDescription: pendingRecipe.shortDescription,
-      prepMinutes: pendingRecipe.prepMinutes,
-      cookMinutes: pendingRecipe.cookMinutes,
-      servings: pendingRecipe.servings,
-      coverImageUrl: pendingRecipe.coverImageUrl,
-      category: pendingRecipe.category,
-      cuisine: pendingRecipe.cuisine,
-      difficulty: pendingRecipe.difficulty,
-      locale: pendingRecipe.locale,
-      status: RecipeStatus.PENDING,
-      submittedAt: new Date(),
-      images: {
-        create: [{ imageUrl: pendingRecipe.coverImageUrl, sortOrder: 1 }]
-      },
-      ingredients: {
-        create: [...pendingRecipe.ingredients]
-      },
-      steps: {
-        create: [...pendingRecipe.steps]
+  if (!isProductionSeed && localEditorId) {
+    await prisma.recipe.create({
+      data: {
+        authorId: localEditorId,
+        title: localOnlyPendingRecipe.title,
+        slug: localOnlyPendingRecipe.slug,
+        shortDescription: localOnlyPendingRecipe.shortDescription,
+        prepMinutes: localOnlyPendingRecipe.prepMinutes,
+        cookMinutes: localOnlyPendingRecipe.cookMinutes,
+        servings: localOnlyPendingRecipe.servings,
+        coverImageUrl: localOnlyPendingRecipe.coverImageUrl,
+        category: localOnlyPendingRecipe.category,
+        cuisine: localOnlyPendingRecipe.cuisine,
+        difficulty: localOnlyPendingRecipe.difficulty,
+        locale: localOnlyPendingRecipe.locale,
+        status: RecipeStatus.PENDING,
+        submittedAt: new Date(),
+        images: {
+          create: [{ imageUrl: localOnlyPendingRecipe.coverImageUrl, sortOrder: 1 }]
+        },
+        ingredients: {
+          create: [...localOnlyPendingRecipe.ingredients]
+        },
+        steps: {
+          create: [...localOnlyPendingRecipe.steps]
+        }
       }
-    }
-  });
+    });
+  }
 }
 
 main()
