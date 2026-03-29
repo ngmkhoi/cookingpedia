@@ -9,6 +9,27 @@ test("guest header exposes account entry and auth routes", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("mobile header collapses nav into the account-led trigger for anonymous users", async ({
+  page
+}) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+
+  const header = page.locator("header");
+  await expect(header.getByRole("link", { name: "Search" })).toHaveCount(0);
+  await expect(header.getByRole("link", { name: "Trending" })).toHaveCount(0);
+
+  const trigger = header.getByRole("button", { name: /login \/ register/i });
+  await expect(trigger).toBeVisible();
+  await trigger.click();
+
+  const menu = page.getByRole("menu");
+  await expect(menu.getByRole("link", { name: "Search" })).toBeVisible();
+  await expect(menu.getByRole("link", { name: "Trending" })).toBeVisible();
+  await expect(menu.getByRole("link", { name: "Login" })).toBeVisible();
+  await expect(menu.getByRole("link", { name: "Register" })).toBeVisible();
+});
+
 test("homepage surfaces discovery sections and guest auth gate", async ({
   page
 }) => {

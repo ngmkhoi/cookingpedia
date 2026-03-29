@@ -64,6 +64,26 @@ export function SiteHeader() {
     router.refresh();
   };
 
+  const mobileExploreLinks = (
+    <div className="flex flex-col gap-0.5 md:hidden">
+      <Link
+        href={MAIN_NAV[0].href}
+        className="rounded-[1rem] px-4 py-3 text-sm transition-colors hover:bg-black/5"
+        onClick={() => setOpen(false)}
+      >
+        {MAIN_NAV[0].label.en}
+      </Link>
+      <Link
+        href={MAIN_NAV[1].href}
+        className="rounded-[1rem] px-4 py-3 text-sm transition-colors hover:bg-black/5"
+        onClick={() => setOpen(false)}
+      >
+        {MAIN_NAV[1].label.en}
+      </Link>
+      <div className="my-1 h-px bg-[var(--line-subtle)]" />
+    </div>
+  );
+
   return (
     <header
       className={`fixed left-1/2 z-40 flex -translate-x-1/2 items-center justify-between px-6 py-3 transition-all duration-500 ${
@@ -84,7 +104,7 @@ export function SiteHeader() {
       <nav className="flex items-center gap-2 text-sm">
         <Link
           href={MAIN_NAV[0].href}
-          className={`rounded-[1.2rem] px-4 py-2.5 transition-all duration-200 ${
+          className={`hidden rounded-[1.2rem] px-4 py-2.5 transition-all duration-200 md:inline-flex ${
             elevated
               ? "border border-[var(--line)] bg-[var(--panel)] text-[var(--ink)] hover:bg-[var(--panel-soft)]"
               : "border border-white/15 bg-white/10 text-white/90 backdrop-blur-sm hover:bg-white/20"
@@ -94,7 +114,7 @@ export function SiteHeader() {
         </Link>
         <Link
           href={MAIN_NAV[1].href}
-          className={`rounded-[1.2rem] px-4 py-2.5 transition-all duration-200 ${
+          className={`hidden rounded-[1.2rem] px-4 py-2.5 transition-all duration-200 md:inline-flex ${
             elevated
               ? "text-[var(--muted)] hover:bg-black/5"
               : "text-white/70 hover:text-white"
@@ -121,7 +141,10 @@ export function SiteHeader() {
             {auth.status === "authenticated" ? (
               <>
                 <UserCircle weight="duotone" className="mr-2 text-base" />
-                <span>{auth.user?.displayName ?? "Profile"}</span>
+                <span className="md:hidden">Profile</span>
+                <span className="hidden md:inline">
+                  {auth.user?.displayName ?? "Profile"}
+                </span>
               </>
             ) : (
               <>
@@ -134,11 +157,12 @@ export function SiteHeader() {
 
           {open ? (
             <div
-              className="panel absolute right-0 top-[calc(100%+0.75rem)] z-20 min-w-[220px] rounded-[1.5rem] p-2"
+              className="panel absolute right-0 top-[calc(100%+0.75rem)] z-20 min-w-[240px] w-[min(280px,calc(100vw-2rem))] rounded-[1.5rem] p-2"
               role="menu"
             >
               {auth.status === "authenticated" ? (
                 <div className="flex flex-col gap-0.5">
+                  {mobileExploreLinks}
                   {auth.user?.role === "ADMIN" ? (
                     <Link
                       href="/admin/recipes/pending"
@@ -211,6 +235,7 @@ export function SiteHeader() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-0.5">
+                  {mobileExploreLinks}
                   <Link
                     href="/login"
                     className="rounded-[1rem] px-4 py-3 text-sm transition-colors hover:bg-black/5"

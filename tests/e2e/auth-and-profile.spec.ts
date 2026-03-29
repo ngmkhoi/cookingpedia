@@ -24,4 +24,14 @@ test("user can register and reach the private profile", async ({ page }) => {
   expect(headerBox).not.toBeNull();
   expect(titleBox).not.toBeNull();
   expect(titleBox!.y).toBeGreaterThanOrEqual(headerBox!.y + headerBox!.height - 1);
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  const mobileTrigger = header.getByRole("button", { name: /bao huynh|profile/i });
+  await expect(mobileTrigger).toBeVisible();
+  await mobileTrigger.click();
+
+  const menu = page.getByRole("menu");
+  await expect(menu.getByRole("link", { name: "Search" })).toBeVisible();
+  await expect(menu.getByRole("link", { name: "Trending" })).toBeVisible();
+  await expect(menu.getByRole("link", { name: "Profile" })).toBeVisible();
 });
