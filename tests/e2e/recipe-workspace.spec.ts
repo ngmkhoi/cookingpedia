@@ -20,6 +20,7 @@ test("author can manage draft and pending recipes from my recipes", async ({
   await page.getByPlaceholder("Password").fill("SecretPass123!");
   await page.getByRole("button", { name: "Create account" }).click();
   await expect(page).toHaveURL("/my-recipes");
+  await expect(page.getByRole("link", { name: "Create new recipe" })).toHaveCount(0);
 
   await page.goto("/my-recipes/new");
 
@@ -38,6 +39,14 @@ test("author can manage draft and pending recipes from my recipes", async ({
       message.includes("hydrated but some attributes of the server rendered HTML didn't match")
     )
   ).toBe(false);
+  const workspaceTitle = page.getByRole("heading", { name: "My Recipes" });
+  const createRecipeLink = page.getByRole("link", { name: "Create new recipe" });
+  await expect(createRecipeLink).toBeVisible();
+  const titleBox = await workspaceTitle.boundingBox();
+  const createRecipeLinkBox = await createRecipeLink.boundingBox();
+  expect(titleBox).not.toBeNull();
+  expect(createRecipeLinkBox).not.toBeNull();
+  expect(createRecipeLinkBox!.y).toBeLessThanOrEqual(titleBox!.y + 80);
   await expect(page.getByText(recipeTitle)).toBeVisible();
   await page.getByRole("link", { name: "View" }).click();
   await expect(page).toHaveURL(/\/my-recipes\/.+$/);
@@ -56,6 +65,7 @@ test("author can manage draft and pending recipes from my recipes", async ({
 
   await page.getByRole("button", { name: "Submit for review" }).click();
   await expect(page.getByText("Pending")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Create new recipe" })).toBeVisible();
   await page.getByRole("link", { name: "View" }).click();
   await expect(page).toHaveURL(/\/my-recipes\/.+$/);
   await expect(page.getByRole("heading", { name: recipeTitle })).toBeVisible();

@@ -32,6 +32,37 @@ describe("profile and uploads", () => {
     expect(publicResponse.body.author.username).toBe(username);
   });
 
+  it("returns a field-aware conflict when updating to a taken username", async () => {
+    const takenAgent = request.agent(app);
+    const editingAgent = request.agent(app);
+    const suffix = (Date.now() + 10).toString(36);
+    const takenUsername = `taken-profile-${suffix}`;
+
+    await takenAgent.post("/api/auth/register").send({
+      email: `taken-profile-${suffix}@cookpedia.test`,
+      password: "SecretPass123!",
+      displayName: "Taken Profile",
+      username: takenUsername
+    });
+
+    await editingAgent.post("/api/auth/register").send({
+      email: `editing-profile-${suffix}@cookpedia.test`,
+      password: "SecretPass123!",
+      displayName: "Editing Profile",
+      username: `editing-profile-${suffix}`
+    });
+
+    const updateResponse = await editingAgent.patch("/api/users/me").send({
+      username: takenUsername
+    });
+
+    expect(updateResponse.status).toBe(409);
+    expect(updateResponse.body.message).toBe("FIELD_CONFLICT");
+    expect(updateResponse.body.fieldErrors).toEqual({
+      username: "This username is already taken"
+    });
+  });
+
   it("rejects non-image uploads", async () => {
     const agent = request.agent(app);
     const suffix = (Date.now() + 1).toString(36);

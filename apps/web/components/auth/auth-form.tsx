@@ -96,21 +96,24 @@ export function AuthForm({
   const debouncedUsername = useDebouncedValue(usernameValue, 250);
   const debouncedEmail = useDebouncedValue(emailValue, 250);
   const debouncedPassword = useDebouncedValue(passwordValue, 250);
+  const emailAvailabilityEnabled =
+    currentMode === "register" &&
+    Boolean(form.formState.touchedFields.email) &&
+    (!form.formState.errors.email || form.formState.errors.email.type === "availability");
+  const usernameAvailabilityEnabled =
+    currentMode === "register" &&
+    Boolean(form.formState.touchedFields.username) &&
+    (!form.formState.errors.username ||
+      form.formState.errors.username.type === "availability");
   const emailAvailability = useFieldAvailability({
     field: "email",
     value: emailValue,
-    enabled:
-      currentMode === "register" &&
-      Boolean(form.formState.touchedFields.email) &&
-      !form.formState.errors.email
+    enabled: emailAvailabilityEnabled
   });
   const usernameAvailability = useFieldAvailability({
     field: "username",
     value: usernameValue,
-    enabled:
-      currentMode === "register" &&
-      Boolean(form.formState.touchedFields.username) &&
-      !form.formState.errors.username
+    enabled: usernameAvailabilityEnabled
   });
 
   useEffect(() => {

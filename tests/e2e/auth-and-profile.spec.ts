@@ -66,3 +66,61 @@ test("user can save a recipe draft without providing a cover image URL", async (
   await expect(page).toHaveURL("/my-recipes");
   await expect(page.getByText(recipeTitle)).toBeVisible();
 });
+
+test("user can update profile with prefilled values and debounced username checks", async ({
+  page,
+  request
+}) => {
+  const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const takenUsername = `taken-settings-${suffix}`;
+  const originalUsername = `settings-user-${suffix}`;
+  const updatedUsername = `settings-user-next-${suffix}`;
+
+  const takenRegisterResponse = await request.post("http://localhost:4000/api/auth/register", {
+    headers: {
+      Origin: "http://localhost:3000"
+    },
+    data: {
+      email: `taken-settings-${suffix}@cookpedia.test`,
+      password: "SecretPass123!",
+      displayName: "Taken Settings User",
+      username: takenUsername
+    }
+  });
+  expect(takenRegisterResponse.ok()).toBeTruthy();
+
+  await page.goto("/register");
+  await page.getByPlaceholder("Display name").fill("Settings User");
+  await page.getByPlaceholder("Username").fill(originalUsername);
+  await page.getByPlaceholder("Email").fill(`settings-${suffix}@cookpedia.test`);
+  await page.getByPlaceholder("Password").fill("SecretPass123!");
+  await page.getByRole("button", { name: "Create account" }).click();
+  await expect(page).toHaveURL("/my-recipes");
+
+  await page.goto("/settings/profile");
+
+  const displayNameInput = page.getByPlaceholder("Display name");
+  const usernameInput = page.getByPlaceholder("Username");
+  const saveButton = page.getByRole("button", { name: "Save changes" });
+
+  await expect(displayNameInput).toHaveValue("Settings User");
+  await expect(usernameInput).toHaveValue(originalUsername);
+
+  await usernameInput.fill(takenUsername);
+  await expect(page.getByText("This username is already taken")).toBeVisible();
+  await expect(saveButton).toBeDisabled();
+
+  await usernameInput.fill(updatedUsername);
+  await displayNameInput.fill("Settings User Updated");
+  await page.getByPlaceholder("Bio").fill("Updated from profile settings.");
+
+  await expect(page.getByText("Username is available")).toBeVisible();
+  await expect(saveButton).toBeEnabled();
+
+  await saveButton.click();
+
+  await expect(page).toHaveURL("/settings/profile");
+  await expect(displayNameInput).toHaveValue("Settings User Updated");
+  await expect(usernameInput).toHaveValue(updatedUsername);
+  await expect(page.getByPlaceholder("Bio")).toHaveValue("Updated from profile settings.");
+});

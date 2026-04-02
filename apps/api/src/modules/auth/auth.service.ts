@@ -179,6 +179,7 @@ export const authService = {
         username: true,
         avatarUrl: true,
         bio: true,
+        locale: true,
         role: true
       }
     });

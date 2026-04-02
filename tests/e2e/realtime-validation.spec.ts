@@ -14,9 +14,18 @@ test("register form shows inline validation and debounced availability states", 
   page
 }) => {
   const suffix = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const availabilityRequests: string[] = [];
+  page.on("request", (request) => {
+    const url = request.url();
+    if (url.includes("/api/auth/availability")) {
+      availabilityRequests.push(url);
+    }
+  });
+
   await registerUser(page, suffix);
 
   await page.goto("/register");
+  availabilityRequests.length = 0;
   await page.getByPlaceholder("Display name").click();
   await page.getByPlaceholder("Password").click();
 
@@ -33,10 +42,22 @@ test("register form shows inline validation and debounced availability states", 
   await page.getByPlaceholder("Username").fill(`bao-huynh-${suffix}`);
   await page.getByPlaceholder("Email").fill(`bao-${suffix}@cookpedia.test`);
 
-  await expect(page.getByText("Checking availability...").first()).toBeVisible();
+  await expect.poll(() => availabilityRequests.length).toBeGreaterThan(0);
   await expect(page.getByText("This username is already taken")).toBeVisible();
   await expect(page.getByText("This email is already in use")).toBeVisible();
   await expect(page.getByRole("button", { name: "Create account" })).toBeDisabled();
+
+  await page.waitForTimeout(1000);
+
+  const duplicateUsernameRequests = availabilityRequests.filter((url) =>
+    url.includes(`username=${encodeURIComponent(`bao-huynh-${suffix}`)}`)
+  );
+  const duplicateEmailRequests = availabilityRequests.filter((url) =>
+    url.includes(`email=${encodeURIComponent(`bao-${suffix}@cookpedia.test`)}`)
+  );
+
+  expect(duplicateUsernameRequests.length).toBeLessThanOrEqual(2);
+  expect(duplicateEmailRequests.length).toBeLessThanOrEqual(2);
 });
 
 test("login keeps server auth failures generic", async ({ page }) => {
